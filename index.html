@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>생명보험 문제은행</title>
+<style>
+:root {
+  --primary: #2563eb;
+  --primary-light: #dbeafe;
+  --success: #16a34a;
+  --success-bg: #dcfce7;
+  --error: #dc2626;
+  --error-bg: #fee2e2;
+  --warning: #f59e0b;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #1e293b;
+  --text-secondary: #64748b;
+  --border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --radius: 12px;
+  --font: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+}
+.dark {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border: #334155;
+  --primary-light: #1e3a5f;
+  --success-bg: #14532d;
+  --error-bg: #7f1d1d;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.3s, color 0.3s;
+}
+.container { max-width: 500px; margin: 0 auto; padding: 0 16px; }
+
+/* Header */
+.header {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background 0.3s;
+}
+.header-title { font-size: 17px; font-weight: 700; }
+.header-left { display: flex; align-items: center; gap: 8px; }
+.back-btn {
+  background: none; border: none; font-size: 22px; cursor: pointer;
+  color: var(--primary); padding: 4px; display: none;
+}
+.header-right { display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  background: none; border: none; font-size: 20px; cursor: pointer;
+  padding: 6px; border-radius: 8px; color: var(--text-secondary);
+  transition: background 0.2s;
+}
+.icon-btn:active { background: var(--border); }
+
+/* Progress Bar */
+.progress-wrap {
+  padding: 8px 16px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: none;
+}
+.progress-bar {
+  height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background: var(--primary); border-radius: 2px;
+  transition: width 0.3s;
+}
+.progress-text {
+  font-size: 12px; color: var(--text-secondary);
+  margin-top: 4px; text-align: right;
+}
+
+/* Home Screen */
+.home { padding: 20px 0; }
+.home-title {
+  font-size: 24px; font-weight: 800; text-align: center;
+  margin-bottom: 4px;
+}
+.home-subtitle {
+  font-size: 13px; color: var(--text-secondary); text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Mode Toggle */
+.mode-toggle {
+  display: flex; background: var(--border); border-radius: 10px;
+  padding: 3px; margin-bottom: 20px;
+}
+.mode-btn {
+  flex: 1; padding: 10px; border: none; border-radius: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  background: transparent; color: var(--text-secondary);
+  transition: all 0.2s; font-family: var(--font);
+}
+.mode-btn.active {
+  background: var(--card); color: var(--primary);
+  box-shadow: var(--shadow);
+}
+
+/* Category Cards */
+.cat-card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 12px;
+  border: 1px solid var(--border);
+  cursor: pointer; transition: all 0.2s;
+}
+.cat-card:active { transform: scale(0.98); }
+.cat-card-header { display: flex; justify-content: space-between; align-items: center; }
+.cat-card-title { font-size: 16px; font-weight: 700; }
+.cat-card-count { font-size: 13px; color: var(--text-secondary); }
+.cat-card-progress {
+  margin-top: 10px; height: 6px; background: var(--border);
+  border-radius: 3px; overflow: hidden;
+}
+.cat-card-progress-fill {
+  height: 100%; border-radius: 3px; transition: width 0.3s;
+}
+.cat-card-stats {
+  display: flex; justify-content: space-between;
+  margin-top: 6px; font-size: 12px; color: var(--text-secondary);
+}
+
+/* Sub-categories */
+.sub-cats {
+  display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+}
+.sub-cat-btn {
+  padding: 6px 12px; border-radius: 16px; font-size: 12px;
+  border: 1px solid var(--border); background: var(--bg);
+  cursor: pointer; font-family: var(--font); color: var(--text);
+  transition: all 0.2s;
+}
+.sub-cat-btn:active { background: var(--primary-light); }
+
+/* Special Cards Row */
+.special-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  margin-bottom: 12px;
+}
+.special-card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 14px; border: 1px solid var(--border);
+  cursor: pointer; text-align: center; transition: all 0.2s;
+}
+.special-card:active { transform: scale(0.98); }
+.special-card-icon { font-size: 24px; margin-bottom: 4px; }
+.special-card-title { font-size: 14px; font-weight: 600; }
+.special-card-count { font-size: 12px; color: var(--text-secondary); }
+
+/* Stats Card */
+.stats-card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 16px; border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.stats-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  text-align: center;
+}
+.stat-num { font-size: 22px; font-weight: 800; color: var(--primary); }
+.stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+/* Options Row */
+.options-row {
+  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.opt-chip {
+  padding: 8px 14px; border-radius: 20px; font-size: 13px;
+  border: 1px solid var(--border); background: var(--card);
+  cursor: pointer; font-family: var(--font); color: var(--text);
+  display: flex; align-items: center; gap: 4px; transition: all 0.2s;
+}
+.opt-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* Question Screen */
+.question-screen { display: none; padding: 16px 0 100px; }
+.q-number {
+  font-size: 13px; color: var(--text-secondary); font-weight: 600;
+  margin-bottom: 12px;
+}
+.q-text {
+  font-size: 17px; font-weight: 600; line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+/* Choices */
+.choice-list { display: flex; flex-direction: column; gap: 10px; }
+.choice-btn {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px; border-radius: var(--radius);
+  border: 2px solid var(--border); background: var(--card);
+  cursor: pointer; text-align: left; font-family: var(--font);
+  font-size: 15px; line-height: 1.5; color: var(--text);
+  transition: all 0.2s; width: 100%;
+}
+.choice-btn:active { transform: scale(0.99); }
+.choice-num {
+  min-width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bg); display: flex; align-items: center;
+  justify-content: center; font-weight: 700; font-size: 13px;
+  flex-shrink: 0; color: var(--text-secondary);
+  transition: all 0.2s;
+}
+.choice-text { flex: 1; padding-top: 3px; }
+
+/* Study Mode - Correct Answer Highlight */
+.choice-btn.correct-highlight {
+  border-color: var(--success);
+  background: var(--success-bg);
+}
+.choice-btn.correct-highlight .choice-num {
+  background: var(--success); color: white;
+}
+.choice-btn.correct-highlight .choice-text {
+  font-weight: 700; color: var(--success);
+}
+
+/* Practice Mode - After Selection */
+.choice-btn.selected-correct {
+  border-color: var(--success); background: var(--success-bg);
+}
+.choice-btn.selected-correct .choice-num {
+  background: var(--success); color: white;
+}
+.choice-btn.selected-wrong {
+  border-color: var(--error); background: var(--error-bg);
+}
+.choice-btn.selected-wrong .choice-num {
+  background: var(--error); color: white;
+}
+.choice-btn.show-correct {
+  border-color: var(--success); background: var(--success-bg);
+}
+.choice-btn.show-correct .choice-num {
+  background: var(--success); color: white;
+}
+.choice-btn.disabled { pointer-events: none; opacity: 0.95; }
+
+/* Explanation */
+.explanation {
+  margin-top: 16px; padding: 14px; border-radius: var(--radius);
+  background: var(--primary-light); font-size: 14px;
+  line-height: 1.6; display: none;
+}
+.explanation-label {
+  font-weight: 700; color: var(--primary); margin-bottom: 4px;
+}
+
+/* Result Badge */
+.result-badge {
+  display: none; text-align: center; margin-top: 16px;
+  font-size: 15px; font-weight: 700; padding: 10px;
+  border-radius: var(--radius);
+}
+.result-badge.correct { background: var(--success-bg); color: var(--success); }
+.result-badge.wrong { background: var(--error-bg); color: var(--error); }
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--card); border-top: 1px solid var(--border);
+  padding: 12px 16px; padding-bottom: max(12px, env(safe-area-inset-bottom));
+  display: none; z-index: 100;
+}
+.bottom-nav-inner {
+  max-width: 500px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.nav-btn {
+  padding: 10px 24px; border-radius: 10px;
+  border: none; font-size: 15px; font-weight: 600;
+  cursor: pointer; font-family: var(--font);
+  transition: all 0.2s;
+}
+.nav-btn:active { transform: scale(0.96); }
+.nav-btn.prev { background: var(--border); color: var(--text); }
+.nav-btn.next { background: var(--primary); color: white; }
+.nav-btn:disabled { opacity: 0.4; pointer-events: none; }
+.nav-counter { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+
+/* Credit */
+.credit {
+  text-align: center; font-size: 12px; color: var(--text-secondary);
+  padding: 20px 0; margin-top: 8px;
+}
+.credit a { color: var(--primary); text-decoration: none; }
+
+/* Loading */
+.loading {
+  text-align: center; padding: 40px 20px;
+  color: var(--text-secondary); font-size: 14px;
+}
+.spinner {
+  width: 32px; height: 32px; border: 3px solid var(--border);
+  border-top-color: var(--primary); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Toggle Switch */
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0;
+}
+.toggle-label { font-size: 14px; font-weight: 600; }
+.toggle {
+  width: 48px; height: 28px; border-radius: 14px;
+  background: var(--border); position: relative; cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle.on { background: var(--primary); }
+.toggle-knob {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: white; position: absolute; top: 3px; left: 3px;
+  transition: transform 0.2s; box-shadow: var(--shadow);
+}
+.toggle.on .toggle-knob { transform: translateX(20px); }
+
+/* Scroll */
+.screen { min-height: calc(100vh - 60px); }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: var(--text); color: var(--bg); padding: 10px 20px;
+  border-radius: 20px; font-size: 14px; z-index: 200;
+  opacity: 0; transition: opacity 0.3s; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+/* Exam Result */
+.exam-result { padding: 20px 0; text-align: center; }
+.exam-score { font-size: 48px; font-weight: 800; color: var(--primary); }
+.exam-pass { color: var(--success); font-size: 20px; font-weight: 700; margin: 8px 0; }
+.exam-fail { color: var(--error); font-size: 20px; font-weight: 700; margin: 8px 0; }
+.exam-detail { color: var(--text-secondary); font-size: 14px; margin: 4px 0; }
+.exam-actions { margin-top: 24px; display: flex; gap: 12px; justify-content: center; }
+.exam-btn {
+  padding: 12px 24px; border-radius: 10px; font-size: 15px;
+  font-weight: 600; cursor: pointer; border: none;
+  font-family: var(--font);
+}
+.exam-btn.primary { background: var(--primary); color: white; }
+.exam-btn.secondary { background: var(--border); color: var(--text); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <button class="back-btn" onclick="goBack()">&larr;</button>
+    <span class="header-title" id="headerTitle">생명보험 문제은행</span>
+  </div>
+  <div class="header-right">
+    <button class="icon-btn" id="bookmarkBtn" onclick="toggleBookmark()" style="display:none" title="북마크">&#9734;</button>
+    <button class="icon-btn" onclick="toggleDark()" title="다크모드">&#9790;</button>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="progress-wrap" id="progressWrap">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-text" id="progressText"></div>
+</div>
+
+<!-- Home Screen -->
+<div class="screen" id="homeScreen">
+  <div class="container home">
+    <div class="home-title">생명보험 문제은행</div>
+    <div class="home-subtitle">김토리쌤 강의 기반 | 60점 커트라인 돌파!</div>
+
+    <!-- Mode Toggle -->
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('study')" id="modeStudy">&#128214; 학습 모드</button>
+      <button class="mode-btn" onclick="setMode('practice')" id="modePractice">&#127919; 연습 모드</button>
+    </div>
+
+    <!-- Study Mode Toggle -->
+    <div id="studyOptions" style="margin-bottom:16px">
+      <div class="toggle-row">
+        <span class="toggle-label">정답 하이라이트 표시</span>
+        <div class="toggle on" id="highlightToggle" onclick="toggleHighlight()">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Cards -->
+    <div id="categoryCards"></div>
+
+    <!-- Special Cards -->
+    <div class="special-row">
+      <div class="special-card" onclick="startQuiz('bookmarks')">
+        <div class="special-card-icon">&#11088;</div>
+        <div class="special-card-title">북마크</div>
+        <div class="special-card-count" id="bookmarkCount">0문제</div>
+      </div>
+      <div class="special-card" onclick="startQuiz('wrong')">
+        <div class="special-card-icon">&#10060;</div>
+        <div class="special-card-title">오답노트</div>
+        <div class="special-card-count" id="wrongCount">0문제</div>
+      </div>
+    </div>
+
+    <!-- All Questions -->
+    <div class="cat-card" onclick="startQuiz('all')">
+      <div class="cat-card-header">
+        <span class="cat-card-title">&#128202; 전체 문제 풀기</span>
+        <span class="cat-card-count" id="allCount"></span>
+      </div>
+    </div>
+
+    <!-- Options -->
+    <div class="options-row">
+      <div class="opt-chip" id="shuffleChip" onclick="toggleShuffle()">&#128256; 셔플</div>
+      <div class="opt-chip" onclick="resetProgress()">&#128260; 초기화</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-card">
+      <div class="stats-grid">
+        <div><div class="stat-num" id="statTotal">0</div><div class="stat-label">전체 문제</div></div>
+        <div><div class="stat-num" id="statDone">0</div><div class="stat-label">풀은 문제</div></div>
+        <div><div class="stat-num" id="statCorrect">0</div><div class="stat-label">정답률</div></div>
+      </div>
+    </div>
+
+    <div class="credit">출처: <a href="https://www.youtube.com/@kimtory_ssam" target="_blank">김토리쌤 YouTube</a></div>
+  </div>
+</div>
+
+<!-- Question Screen -->
+<div class="screen question-screen" id="questionScreen">
+  <div class="container">
+    <div class="q-number" id="qNumber"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="choice-list" id="choiceList"></div>
+    <div class="result-badge" id="resultBadge"></div>
+    <div class="explanation" id="explanation">
+      <div class="explanation-label">&#128161; 해설</div>
+      <div id="explanationText"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exam Result Screen -->
+<div class="screen" id="resultScreen" style="display:none">
+  <div class="container exam-result">
+    <div id="resultContent"></div>
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav" id="bottomNav">
+  <div class="bottom-nav-inner">
+    <button class="nav-btn prev" id="prevBtn" onclick="prevQ()">&#9664; 이전</button>
+    <span class="nav-counter" id="navCounter"></span>
+    <button class="nav-btn next" id="nextBtn" onclick="nextQ()">다음 &#9654;</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Loading -->
+<div class="loading" id="loadingScreen">
+  <div class="spinner"></div>
+  <div>문제 데이터를 불러오는 중...</div>
+</div>
+
+<script src="data.js"></script>
+<script>
+// ========== STATE ==========
+let allQuestions = [];
+let currentQuiz = [];
+let currentIdx = 0;
+let mode = 'study'; // 'study' | 'practice'
+let showHighlight = true;
+let shuffleEnabled = false;
+let darkMode = false;
+let answered = {}; // { qid: selectedChoice }
+
+// localStorage keys
+const LS = {
+  bookmarks: 'insu_bookmarks',
+  wrong: 'insu_wrong',
+  answered: 'insu_answered',
+  correct: 'insu_correct',
+  mode: 'insu_mode',
+  highlight: 'insu_highlight',
+  shuffle: 'insu_shuffle',
+  dark: 'insu_dark',
+};
+
+// ========== LOAD DATA ==========
+async function loadData() {
+  // Try fetching from JSON files first (works with HTTP server)
+  const files = [
+    'questions_basic.json',
+    'questions_expected.json',
+    'questions_mock.json'
+  ];
+
+  let all = [];
+  for (const f of files) {
+    try {
+      const res = await fetch(f);
+      if (res.ok) {
+        const data = await res.json();
+        all = all.concat(data);
+      }
+    } catch(e) { /* skip */ }
+  }
+
+  // Fallback to embedded data (works with file:// protocol)
+  if (all.length === 0 && typeof EMBEDDED_DATA !== 'undefined') {
+    all = EMBEDDED_DATA;
+  }
+
+  return all;
+}
+
+// ========== INIT ==========
+async function init() {
+  // Load preferences
+  mode = localStorage.getItem(LS.mode) || 'study';
+  showHighlight = localStorage.getItem(LS.highlight) !== 'false';
+  shuffleEnabled = localStorage.getItem(LS.shuffle) === 'true';
+  darkMode = localStorage.getItem(LS.dark) === 'true';
+
+  if (darkMode) document.body.classList.add('dark');
+  updateModeUI();
+  updateHighlightUI();
+  updateShuffleUI();
+
+  // Load questions
+  allQuestions = await loadData();
+
+  // Re-assign IDs to ensure uniqueness
+  allQuestions.forEach((q, i) => q.id = i + 1);
+
+  document.getElementById('loadingScreen').style.display = 'none';
+  renderHome();
+}
+
+// ========== HOME ==========
+function renderHome() {
+  // Group by category
+  const cats = {};
+  allQuestions.forEach(q => {
+    const cat = q.category;
+    if (!cats[cat]) cats[cat] = [];
+    cats[cat].push(q);
+  });
+
+  const savedAnswered = getSet(LS.answered);
+  const savedCorrect = getSet(LS.correct);
+  const bookmarks = getSet(LS.bookmarks);
+  const wrong = getSet(LS.wrong);
+
+  // Build category cards
+  const cardsEl = document.getElementById('categoryCards');
+  const colors = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#6366f1'];
+  let html = '';
+  let colorIdx = 0;
+
+  // Group mock exam sub-categories
+  const catOrder = [];
+  const mockCats = [];
+  Object.keys(cats).sort().forEach(c => {
+    if (c.startsWith('모의고사')) mockCats.push(c);
+    else catOrder.push(c);
+  });
+
+  // Add regular categories
+  catOrder.forEach(cat => {
+    const qs = cats[cat];
+    const done = qs.filter(q => savedAnswered.has(String(q.id))).length;
+    const pct = qs.length > 0 ? Math.round(done/qs.length*100) : 0;
+    const color = colors[colorIdx++ % colors.length];
+    const icons = {'기본이론':'&#128214;','예상문제':'&#128221;'};
+    const icon = icons[cat] || '&#128203;';
+    html += `
+      <div class="cat-card" onclick="startQuiz('cat:${cat}')">
+        <div class="cat-card-header">
+          <span class="cat-card-title">${icon} ${cat}</span>
+          <span class="cat-card-count">${qs.length}문제</span>
+        </div>
+        <div class="cat-card-progress">
+          <div class="cat-card-progress-fill" style="width:${pct}%;background:${color}"></div>
+        </div>
+        <div class="cat-card-stats">
+          <span>진행률 ${pct}%</span>
+          <span>${done}/${qs.length}</span>
+        </div>
+      </div>`;
+  });
+
+  // Mock exam card with sub-categories
+  if (mockCats.length > 0) {
+    const allMockQs = mockCats.flatMap(c => cats[c]);
+    const done = allMockQs.filter(q => savedAnswered.has(String(q.id))).length;
+    const pct = allMockQs.length > 0 ? Math.round(done/allMockQs.length*100) : 0;
+    const color = colors[colorIdx++ % colors.length];
+
+    let subHtml = '<div class="sub-cats">';
+    mockCats.forEach(mc => {
+      const count = cats[mc].length;
+      subHtml += `<button class="sub-cat-btn" onclick="event.stopPropagation();startQuiz('cat:${mc}')">${mc} (${count})</button>`;
+    });
+    subHtml += '</div>';
+
+    html += `
+      <div class="cat-card" onclick="startQuiz('cat_prefix:모의고사')">
+        <div class="cat-card-header">
+          <span class="cat-card-title">&#128203; 모의고사</span>
+          <span class="cat-card-count">${allMockQs.length}문제</span>
+        </div>
+        <div class="cat-card-progress">
+          <div class="cat-card-progress-fill" style="width:${pct}%;background:${color}"></div>
+        </div>
+        <div class="cat-card-stats">
+          <span>진행률 ${pct}%</span>
+          <span>${done}/${allMockQs.length}</span>
+        </div>
+        ${subHtml}
+      </div>`;
+  }
+
+  cardsEl.innerHTML = html;
+
+  // Update counts
+  document.getElementById('bookmarkCount').textContent = bookmarks.size + '문제';
+  document.getElementById('wrongCount').textContent = wrong.size + '문제';
+  document.getElementById('allCount').textContent = allQuestions.length + '문제';
+
+  // Stats
+  document.getElementById('statTotal').textContent = allQuestions.length;
+  document.getElementById('statDone').textContent = savedAnswered.size;
+  const correctRate = savedAnswered.size > 0
+    ? Math.round(savedCorrect.size / savedAnswered.size * 100) + '%'
+    : '-';
+  document.getElementById('statCorrect').textContent = correctRate;
+}
+
+// ========== QUIZ ==========
+function startQuiz(filter) {
+  let qs = [];
+
+  if (filter === 'all') {
+    qs = [...allQuestions];
+  } else if (filter === 'bookmarks') {
+    const bm = getSet(LS.bookmarks);
+    qs = allQuestions.filter(q => bm.has(String(q.id)));
+  } else if (filter === 'wrong') {
+    const wr = getSet(LS.wrong);
+    qs = allQuestions.filter(q => wr.has(String(q.id)));
+  } else if (filter.startsWith('cat:')) {
+    const cat = filter.substring(4);
+    qs = allQuestions.filter(q => q.category === cat);
+  } else if (filter.startsWith('cat_prefix:')) {
+    const prefix = filter.substring(11);
+    qs = allQuestions.filter(q => q.category.startsWith(prefix));
+  }
+
+  if (qs.length === 0) {
+    showToast('문제가 없습니다');
+    return;
+  }
+
+  if (shuffleEnabled) {
+    qs = shuffleArray(qs);
+  }
+
+  currentQuiz = qs;
+  currentIdx = 0;
+  answered = {};
+
+  showQuestionScreen();
+  renderQuestion();
+}
+
+function showQuestionScreen() {
+  document.getElementById('homeScreen').style.display = 'none';
+  document.getElementById('questionScreen').style.display = 'block';
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('bottomNav').style.display = 'block';
+  document.querySelector('.back-btn').style.display = 'block';
+  document.getElementById('bookmarkBtn').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function renderQuestion() {
+  if (currentIdx >= currentQuiz.length) {
+    showResult();
+    return;
+  }
+
+  const q = currentQuiz[currentIdx];
+
+  // Header
+  document.getElementById('headerTitle').textContent = q.category;
+
+  // Progress
+  const pct = ((currentIdx + 1) / currentQuiz.length * 100).toFixed(0);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent =
+    `${currentIdx + 1} / ${currentQuiz.length}`;
+
+  // Question
+  document.getElementById('qNumber').textContent = `Q${currentIdx + 1}.`;
+  document.getElementById('qText').textContent = q.question;
+
+  // Bookmark
+  const bm = getSet(LS.bookmarks);
+  document.getElementById('bookmarkBtn').innerHTML = bm.has(String(q.id)) ? '&#9733;' : '&#9734;';
+
+  // Choices
+  const listEl = document.getElementById('choiceList');
+  let choicesHtml = '';
+  const nums = ['①','②','③','④','⑤'];
+
+  q.choices.forEach((c, i) => {
+    const num = i + 1;
+    let extraClass = '';
+
+    if (mode === 'study' && showHighlight && num === q.answer) {
+      extraClass = 'correct-highlight';
+    }
+
+    // If already answered in practice mode
+    if (mode === 'practice' && answered[q.id] !== undefined) {
+      const selected = answered[q.id];
+      if (num === q.answer) {
+        extraClass = selected === num ? 'selected-correct' : 'show-correct';
+      } else if (num === selected) {
+        extraClass = 'selected-wrong';
+      }
+      extraClass += ' disabled';
+    }
+
+    choicesHtml += `
+      <button class="choice-btn ${extraClass}"
+        onclick="selectChoice(${q.id}, ${num})"
+        ${answered[q.id] !== undefined && mode === 'practice' ? 'disabled' : ''}>
+        <span class="choice-num">${nums[i]}</span>
+        <span class="choice-text">${escHtml(c)}</span>
+      </button>`;
+  });
+
+  listEl.innerHTML = choicesHtml;
+
+  // Result badge
+  const badge = document.getElementById('resultBadge');
+  badge.style.display = 'none';
+  badge.className = 'result-badge';
+
+  if (mode === 'practice' && answered[q.id] !== undefined) {
+    badge.style.display = 'block';
+    if (answered[q.id] === q.answer) {
+      badge.className = 'result-badge correct';
+      badge.textContent = '✅ 정답!';
+    } else {
+      badge.className = 'result-badge wrong';
+      badge.textContent = '❌ 오답';
+    }
+  }
+
+  // Explanation
+  const explEl = document.getElementById('explanation');
+  const explText = document.getElementById('explanationText');
+  if (mode === 'study' || (mode === 'practice' && answered[q.id] !== undefined)) {
+    if (q.explanation && q.explanation.trim()) {
+      explEl.style.display = 'block';
+      explText.textContent = q.explanation;
+    } else {
+      explEl.style.display = 'none';
+    }
+  } else {
+    explEl.style.display = 'none';
+  }
+
+  // Nav
+  document.getElementById('prevBtn').disabled = currentIdx === 0;
+  document.getElementById('navCounter').textContent =
+    mode === 'practice' ? `${Object.keys(answered).length}/${currentQuiz.length}` : '';
+
+  window.scrollTo(0, 0);
+}
+
+function selectChoice(qid, choice) {
+  if (mode === 'study') {
+    // In study mode, tapping just shows info - no selection needed
+    return;
+  }
+
+  if (answered[qid] !== undefined) return;
+
+  const q = currentQuiz[currentIdx];
+  answered[qid] = choice;
+
+  // Save to localStorage
+  addToSet(LS.answered, String(qid));
+  if (choice === q.answer) {
+    addToSet(LS.correct, String(qid));
+    removeFromSet(LS.wrong, String(qid));
+  } else {
+    addToSet(LS.wrong, String(qid));
+    removeFromSet(LS.correct, String(qid));
+  }
+
+  renderQuestion();
+}
+
+function nextQ() {
+  if (currentIdx < currentQuiz.length - 1) {
+    currentIdx++;
+    renderQuestion();
+  } else if (mode === 'practice') {
+    showResult();
+  }
+}
+
+function prevQ() {
+  if (currentIdx > 0) {
+    currentIdx--;
+    renderQuestion();
+  }
+}
+
+// ========== RESULT ==========
+function showResult() {
+  if (mode !== 'practice') {
+    goHome();
+    return;
+  }
+
+  const total = currentQuiz.length;
+  const answeredCount = Object.keys(answered).length;
+  let correctCount = 0;
+  currentQuiz.forEach(q => {
+    if (answered[q.id] === q.answer) correctCount++;
+  });
+
+  const score = total > 0 ? Math.round(correctCount / total * 100) : 0;
+  const passed = score >= 60;
+
+  document.getElementById('questionScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+  document.getElementById('bottomNav').style.display = 'none';
+  document.getElementById('progressWrap').style.display = 'none';
+
+  document.getElementById('resultContent').innerHTML = `
+    <div style="margin-top:40px">
+      <div class="exam-score">${score}점</div>
+      <div class="${passed ? 'exam-pass' : 'exam-fail'}">
+        ${passed ? '🎉 합격!' : '😢 불합격'}
+      </div>
+      <div class="exam-detail">${correctCount}/${total} 정답 (커트라인 60점)</div>
+      <div class="exam-detail" style="margin-top:8px">
+        오답: ${total - correctCount}문제
+      </div>
+      <div class="exam-actions">
+        <button class="exam-btn secondary" onclick="startQuiz('wrong')">오답 다시 풀기</button>
+        <button class="exam-btn primary" onclick="goHome()">홈으로</button>
+      </div>
+    </div>`;
+}
+
+// ========== NAVIGATION ==========
+function goBack() {
+  goHome();
+}
+
+function goHome() {
+  document.getElementById('homeScreen').style.display = 'block';
+  document.getElementById('questionScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('bottomNav').style.display = 'none';
+  document.querySelector('.back-btn').style.display = 'none';
+  document.getElementById('bookmarkBtn').style.display = 'none';
+  document.getElementById('headerTitle').textContent = '생명보험 문제은행';
+  renderHome();
+}
+
+// ========== MODE & SETTINGS ==========
+function setMode(m) {
+  mode = m;
+  localStorage.setItem(LS.mode, m);
+  updateModeUI();
+}
+
+function updateModeUI() {
+  document.getElementById('modeStudy').className = 'mode-btn' + (mode === 'study' ? ' active' : '');
+  document.getElementById('modePractice').className = 'mode-btn' + (mode === 'practice' ? ' active' : '');
+  document.getElementById('studyOptions').style.display = mode === 'study' ? 'block' : 'none';
+}
+
+function toggleHighlight() {
+  showHighlight = !showHighlight;
+  localStorage.setItem(LS.highlight, showHighlight);
+  updateHighlightUI();
+}
+
+function updateHighlightUI() {
+  const el = document.getElementById('highlightToggle');
+  el.className = 'toggle' + (showHighlight ? ' on' : '');
+}
+
+function toggleShuffle() {
+  shuffleEnabled = !shuffleEnabled;
+  localStorage.setItem(LS.shuffle, shuffleEnabled);
+  updateShuffleUI();
+}
+
+function updateShuffleUI() {
+  document.getElementById('shuffleChip').className = 'opt-chip' + (shuffleEnabled ? ' active' : '');
+}
+
+function toggleDark() {
+  darkMode = !darkMode;
+  document.body.classList.toggle('dark', darkMode);
+  localStorage.setItem(LS.dark, darkMode);
+}
+
+function toggleBookmark() {
+  if (currentQuiz.length === 0) return;
+  const q = currentQuiz[currentIdx];
+  const bm = getSet(LS.bookmarks);
+  if (bm.has(String(q.id))) {
+    removeFromSet(LS.bookmarks, String(q.id));
+    showToast('북마크 해제');
+  } else {
+    addToSet(LS.bookmarks, String(q.id));
+    showToast('북마크 추가');
+  }
+  const bmNew = getSet(LS.bookmarks);
+  document.getElementById('bookmarkBtn').innerHTML = bmNew.has(String(q.id)) ? '&#9733;' : '&#9734;';
+}
+
+function resetProgress() {
+  if (!confirm('모든 진행 상황을 초기화하시겠습니까?')) return;
+  localStorage.removeItem(LS.answered);
+  localStorage.removeItem(LS.correct);
+  localStorage.removeItem(LS.wrong);
+  localStorage.removeItem(LS.bookmarks);
+  showToast('초기화 완료');
+  renderHome();
+}
+
+// ========== UTILITIES ==========
+function getSet(key) {
+  try {
+    const arr = JSON.parse(localStorage.getItem(key) || '[]');
+    return new Set(arr);
+  } catch { return new Set(); }
+}
+
+function saveSet(key, set) {
+  localStorage.setItem(key, JSON.stringify([...set]));
+}
+
+function addToSet(key, val) {
+  const s = getSet(key);
+  s.add(val);
+  saveSet(key, s);
+}
+
+function removeFromSet(key, val) {
+  const s = getSet(key);
+  s.delete(val);
+  saveSet(key, s);
+}
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+// Swipe support
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  if (document.getElementById('questionScreen').style.display !== 'block') return;
+  const diff = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(diff) > 80) {
+    if (diff > 0) prevQ();
+    else nextQ();
+  }
+});
+
+// Keyboard support
+document.addEventListener('keydown', e => {
+  if (document.getElementById('questionScreen').style.display !== 'block') return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextQ(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prevQ(); }
+  if (e.key >= '1' && e.key <= '4') {
+    const q = currentQuiz[currentIdx];
+    if (q && mode === 'practice') selectChoice(q.id, parseInt(e.key));
+  }
+});
+
+// Init
+init();
+</script>
+</body>
+</html>
