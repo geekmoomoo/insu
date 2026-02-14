@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#1a3a6e">
+<meta name="apple-mobile-web-app-title" content="생보 모의고사">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a3a6e' width='100' height='100' rx='20'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white'>&#128221;</text></svg>">
+<link rel="manifest" href="manifest.json">
 <title>생명보험 모의고사</title>
 <style>
 :root {
@@ -467,55 +471,71 @@ body {
       <button class="mode-item" id="modePractice" onclick="setMode('practice')">시험모드</button>
     </div>
 
-    <!-- Study options -->
-    <div id="studyOptions">
+    <!-- Study mode panel -->
+    <div id="studyPanel">
       <div class="toggle-row">
         <span class="toggle-label">정답 볼드 표시</span>
         <div class="toggle on" id="highlightToggle" onclick="toggleHighlight()">
           <div class="toggle-knob"></div>
         </div>
       </div>
-    </div>
-
-    <!-- Stats -->
-    <div class="stats-row">
-      <div class="stat-box">
-        <div class="stat-num" id="statTotal">0</div>
-        <div class="stat-label">전체</div>
+      <div class="stats-row" style="grid-template-columns:1fr">
+        <div class="stat-box">
+          <div class="stat-num" id="statTotal">0</div>
+          <div class="stat-label">전체 문제</div>
+        </div>
       </div>
-      <div class="stat-box">
-        <div class="stat-num" id="statDone">0</div>
-        <div class="stat-label">완료</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-num" id="statRate">-</div>
-        <div class="stat-label">정답률</div>
-      </div>
-    </div>
-
-    <!-- Special -->
-    <div class="special-row">
-      <div class="special-btn" onclick="startQuiz('all_mock')">
-        <div class="special-btn-icon">&#128221;</div>
-        <div class="special-btn-label">전체</div>
-        <div class="special-btn-count" id="allCount">0</div>
-      </div>
-      <div class="special-btn" onclick="startQuiz('bookmarks')">
-        <div class="special-btn-icon">&#9733;</div>
-        <div class="special-btn-label">북마크</div>
-        <div class="special-btn-count" id="bmCount">0</div>
-      </div>
-      <div class="special-btn" onclick="startQuiz('wrong')">
-        <div class="special-btn-icon">&#10060;</div>
-        <div class="special-btn-label">오답</div>
-        <div class="special-btn-count" id="wrongCount">0</div>
+      <div class="special-row" style="grid-template-columns:1fr 1fr">
+        <div class="special-btn" onclick="startQuiz('all_mock')">
+          <div class="special-btn-icon">&#128221;</div>
+          <div class="special-btn-label">전체 학습</div>
+          <div class="special-btn-count" id="allCount">0</div>
+        </div>
+        <div class="special-btn" onclick="startQuiz('bookmarks')">
+          <div class="special-btn-icon">&#9733;</div>
+          <div class="special-btn-label">북마크</div>
+          <div class="special-btn-count" id="bmCount">0</div>
+        </div>
       </div>
     </div>
 
-    <!-- Options -->
-    <div class="options-row">
-      <button class="opt-btn" id="shuffleBtn" onclick="toggleShuffle()">&#128256; 셔플</button>
-      <button class="opt-btn" onclick="resetProgress()">&#128260; 초기화</button>
+    <!-- Practice mode panel -->
+    <div id="practicePanel" style="display:none">
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-num" id="statPTotal">0</div>
+          <div class="stat-label">전체</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statDone">0</div>
+          <div class="stat-label">완료</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statRate">-</div>
+          <div class="stat-label">정답률</div>
+        </div>
+      </div>
+      <div class="special-row">
+        <div class="special-btn" onclick="startQuiz('all_mock')">
+          <div class="special-btn-icon">&#128221;</div>
+          <div class="special-btn-label">전체</div>
+          <div class="special-btn-count" id="allCountP">0</div>
+        </div>
+        <div class="special-btn" onclick="startQuiz('bookmarks')">
+          <div class="special-btn-icon">&#9733;</div>
+          <div class="special-btn-label">북마크</div>
+          <div class="special-btn-count" id="bmCountP">0</div>
+        </div>
+        <div class="special-btn" onclick="startQuiz('wrong')">
+          <div class="special-btn-icon">&#10060;</div>
+          <div class="special-btn-label">오답</div>
+          <div class="special-btn-count" id="wrongCount">0</div>
+        </div>
+      </div>
+      <div class="options-row">
+        <button class="opt-btn" id="shuffleBtn" onclick="toggleShuffle()">&#128256; 셔플</button>
+        <button class="opt-btn" onclick="resetProgress()">&#128260; 초기화</button>
+      </div>
     </div>
 
     <!-- Section-based study -->
@@ -637,13 +657,20 @@ function renderHome() {
   const mockCorrect = mockQs.filter(q => correct.has(String(q.id)));
 
   document.getElementById('totalCount').textContent = mockQs.length;
+
+  // Study panel
+  document.getElementById('statTotal').textContent = mockQs.length;
   document.getElementById('allCount').textContent = mockQs.length + '문제';
   document.getElementById('bmCount').textContent = bm.size + '문제';
-  document.getElementById('wrongCount').textContent = wrong.size + '문제';
-  document.getElementById('statTotal').textContent = mockQs.length;
+
+  // Practice panel
+  document.getElementById('statPTotal').textContent = mockQs.length;
   document.getElementById('statDone').textContent = mockSaved.length;
   document.getElementById('statRate').textContent =
     mockSaved.length > 0 ? Math.round(mockCorrect.length / mockSaved.length * 100) + '%' : '-';
+  document.getElementById('allCountP').textContent = mockQs.length + '문제';
+  document.getElementById('bmCountP').textContent = bm.size + '문제';
+  document.getElementById('wrongCount').textContent = wrong.size + '문제';
 
   // Group mock categories by year
   const cats = {};
@@ -975,11 +1002,13 @@ function goHome() {
 function setMode(m) {
   mode = m; localStorage.setItem(LS.mode, m);
   updateModeUI();
+  renderHome();
 }
 function updateModeUI() {
   document.getElementById('modeStudy').className = 'mode-item' + (mode === 'study' ? ' active' : '');
   document.getElementById('modePractice').className = 'mode-item' + (mode === 'practice' ? ' active' : '');
-  document.getElementById('studyOptions').style.display = mode === 'study' ? 'block' : 'none';
+  document.getElementById('studyPanel').style.display = mode === 'study' ? 'block' : 'none';
+  document.getElementById('practicePanel').style.display = mode === 'practice' ? 'block' : 'none';
 }
 function toggleHighlight() {
   showHighlight = !showHighlight;
