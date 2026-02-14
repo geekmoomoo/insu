@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#1a3a6e">
 <meta name="apple-mobile-web-app-title" content="생보 모의고사">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a3a6e' width='100' height='100' rx='20'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white'>&#128221;</text></svg>">
+<link rel="apple-touch-icon" id="touchIcon" href="data:,">
 <link rel="manifest" href="manifest.json">
 <title>생명보험 모의고사</title>
 <style>
@@ -116,11 +116,6 @@ body {
 .home-banner p {
   font-size: 13px; color: var(--text-sub);
 }
-.home-banner .q-count {
-  font-size: 28px; font-weight: 800; color: var(--accent);
-  margin: 8px 0 2px;
-}
-
 /* Mode Toggle */
 .mode-bar {
   display: flex; gap: 0; margin-bottom: 16px;
@@ -426,6 +421,55 @@ body {
 }
 .toggle.on .toggle-knob { transform: translateX(20px); }
 
+/* Completed exam items */
+.mock-item.completed {
+  background: var(--bg); opacity: 0.55;
+}
+.mock-item.completed .mock-item-title {
+  text-decoration: line-through; color: var(--text-sub);
+}
+.complete-btn-active {
+  background: var(--correct) !important; color: #fff !important;
+  border-color: var(--correct) !important;
+}
+
+/* Resume popup */
+.popup-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  z-index: 300; display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.popup {
+  background: var(--paper); border-radius: 12px; padding: 24px;
+  max-width: 320px; width: 100%; text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.popup-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.popup-desc { font-size: 14px; color: var(--text-sub); margin-bottom: 20px; line-height: 1.5; }
+.popup-btns { display: flex; gap: 10px; }
+.popup-btn {
+  flex: 1; padding: 12px; border-radius: 8px; font-size: 14px;
+  font-weight: 600; cursor: pointer; border: 1px solid var(--border);
+  font-family: var(--font); background: var(--paper); color: var(--text);
+}
+.popup-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* Section stats */
+.section-stats {
+  display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;
+}
+.section-stat-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px;
+}
+.section-stat-name { font-size: 13px; font-weight: 600; min-width: 110px; }
+.section-stat-bar {
+  flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+}
+.section-stat-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+.section-stat-pct { font-size: 13px; font-weight: 700; min-width: 36px; text-align: right; }
+
 .credit {
   text-align: center; font-size: 11px; color: var(--text-sub);
   padding: 20px 0;
@@ -442,6 +486,7 @@ body {
       <span class="exam-title" id="headerTitle">생명보험 모의고사</span>
     </div>
     <div class="exam-controls">
+      <button class="ctrl-btn" id="completeBtn" style="display:none" onclick="markComplete()">&#10003; 완료</button>
       <button class="ctrl-btn" id="bookmarkBtn" style="display:none" onclick="toggleBookmark()">&#9734;</button>
       <button class="ctrl-btn" onclick="toggleDark()">&#9790;</button>
     </div>
@@ -459,10 +504,8 @@ body {
 <div id="homeScreen">
   <div class="container home">
     <div class="home-banner">
-      <h1>생명보험·제3보험 모의고사</h1>
+      <h1>생명보험·제3보험 모의고사 <span id="totalCount" style="font-size:14px;font-weight:400;color:var(--text-sub)"></span></h1>
       <p>모집인 등록자격시험 문제은행 (2024~2025)</p>
-      <div class="q-count" id="totalCount">0</div>
-      <p>문제</p>
     </div>
 
     <!-- Mode -->
@@ -474,15 +517,9 @@ body {
     <!-- Study mode panel -->
     <div id="studyPanel">
       <div class="toggle-row">
-        <span class="toggle-label">정답 볼드 표시</span>
+        <span class="toggle-label">정답 표시하기</span>
         <div class="toggle on" id="highlightToggle" onclick="toggleHighlight()">
           <div class="toggle-knob"></div>
-        </div>
-      </div>
-      <div class="stats-row" style="grid-template-columns:1fr">
-        <div class="stat-box">
-          <div class="stat-num" id="statTotal">0</div>
-          <div class="stat-label">전체 문제</div>
         </div>
       </div>
       <div class="special-row" style="grid-template-columns:1fr 1fr">
@@ -533,7 +570,13 @@ body {
         </div>
       </div>
       <div class="options-row">
+        <button class="opt-btn" onclick="startRandomQuiz(20)">&#127922; 랜덤 20문제</button>
+        <button class="opt-btn" onclick="startRandomQuiz(40)">&#127922; 랜덤 40문제</button>
         <button class="opt-btn" id="shuffleBtn" onclick="toggleShuffle()">&#128256; 셔플</button>
+      </div>
+      <!-- Section accuracy -->
+      <div id="sectionStats"></div>
+      <div class="options-row">
         <button class="opt-btn" onclick="resetProgress()">&#128260; 초기화</button>
       </div>
     </div>
@@ -582,6 +625,18 @@ body {
   </div>
 </div>
 
+<!-- Resume Popup -->
+<div class="popup-overlay" id="resumePopup" style="display:none">
+  <div class="popup">
+    <div class="popup-title" id="resumeTitle">이어서 학습</div>
+    <div class="popup-desc" id="resumeDesc"></div>
+    <div class="popup-btns">
+      <button class="popup-btn" onclick="resumeFrom(0)">처음부터</button>
+      <button class="popup-btn primary" id="resumeBtn" onclick="resumeFrom(-1)">이어서</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -608,6 +663,8 @@ const LS = {
   wrong: 'insu_wr2',
   answered: 'insu_ans2',
   correct: 'insu_cor2',
+  completed: 'insu_comp',
+  lastPos: 'insu_pos',
   mode: 'insu_mode',
   highlight: 'insu_hl',
   shuffle: 'insu_shf',
@@ -624,6 +681,19 @@ function init() {
   darkMode = localStorage.getItem(LS.dark) === 'true';
 
   if (darkMode) document.body.classList.add('dark');
+
+  // Generate PNG icon for iOS
+  try {
+    const c = document.createElement('canvas');
+    c.width = 180; c.height = 180;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#1a3a6e';
+    ctx.beginPath(); ctx.roundRect(0, 0, 180, 180, 36); ctx.fill();
+    ctx.font = '90px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('\u{1F4DD}', 90, 96);
+    document.getElementById('touchIcon').href = c.toDataURL('image/png');
+  } catch {}
+
   updateModeUI();
   updateHighlightUI();
   updateShuffleUI();
@@ -650,16 +720,16 @@ function renderHome() {
   const correct = getSet(LS.correct);
   const bm = getSet(LS.bookmarks);
   const wrong = getSet(LS.wrong);
+  const comp = getSet(LS.completed);
 
   const mockQs = getMockQs();
   const archiveQs = getArchiveQs();
   const mockSaved = mockQs.filter(q => saved.has(String(q.id)));
   const mockCorrect = mockQs.filter(q => correct.has(String(q.id)));
 
-  document.getElementById('totalCount').textContent = mockQs.length;
+  document.getElementById('totalCount').textContent = '(' + mockQs.length.toLocaleString() + '문제)';
 
   // Study panel
-  document.getElementById('statTotal').textContent = mockQs.length;
   document.getElementById('allCount').textContent = mockQs.length + '문제';
   document.getElementById('bmCount').textContent = bm.size + '문제';
 
@@ -671,6 +741,25 @@ function renderHome() {
   document.getElementById('allCountP').textContent = mockQs.length + '문제';
   document.getElementById('bmCountP').textContent = bm.size + '문제';
   document.getElementById('wrongCount').textContent = wrong.size + '문제';
+
+  const sectionOrder = ['보험이론 및 윤리', '보험법규', '생명보험', '제3보험'];
+
+  // Section accuracy stats (practice mode)
+  let statsHtml = '<div class="cat-section-title">영역별 정답률</div><div class="section-stats">';
+  sectionOrder.forEach(s => {
+    const secQs = mockQs.filter(q => q.section === s);
+    const secAnswered = secQs.filter(q => saved.has(String(q.id)));
+    const secCorrect = secQs.filter(q => correct.has(String(q.id)));
+    const pct = secAnswered.length > 0 ? Math.round(secCorrect.length / secAnswered.length * 100) : -1;
+    const barColor = pct >= 60 ? 'var(--correct)' : pct >= 0 ? 'var(--wrong)' : 'var(--border)';
+    statsHtml += `<div class="section-stat-row">
+      <span class="section-stat-name">${s}</span>
+      <div class="section-stat-bar"><div class="section-stat-fill" style="width:${pct >= 0 ? pct : 0}%;background:${barColor}"></div></div>
+      <span class="section-stat-pct" style="color:${barColor}">${pct >= 0 ? pct + '%' : '-'}</span>
+    </div>`;
+  });
+  statsHtml += '</div>';
+  document.getElementById('sectionStats').innerHTML = statsHtml;
 
   // Group mock categories by year
   const cats = {};
@@ -687,7 +776,6 @@ function renderHome() {
     if (!sections[s]) sections[s] = [];
     sections[s].push(q);
   });
-  const sectionOrder = ['보험이론 및 윤리', '보험법규', '생명보험', '제3보험'];
   let secHtml = '<div class="cat-section-title">영역별 학습</div>';
   secHtml += '<div class="cat-grid">';
   sectionOrder.forEach(s => {
@@ -724,15 +812,24 @@ function renderHome() {
     mockHtml += `<div class="cat-section-title">${year}년 모의고사 (${yearCats.length}회 · ${yearQs.length}문제${yearDone > 0 ? ' · ' + yearPct + '%' : ''})</div>`;
     mockHtml += '<div class="mock-list">';
 
-    yearCats.forEach(c => {
+    // Sort: incomplete first, completed last
+    const sortedCats = [...yearCats].sort((a, b) => {
+      const ac = comp.has(a) ? 1 : 0;
+      const bc = comp.has(b) ? 1 : 0;
+      return ac - bc;
+    });
+
+    sortedCats.forEach(c => {
       const qs = cats[c];
+      const isComp = comp.has(c);
       const done = qs.filter(q => saved.has(String(q.id))).length;
       const pct = qs.length > 0 ? Math.round(done / qs.length * 100) : 0;
       let badge = '';
-      if (pct === 100) badge = '<span class="mock-badge done">완료</span>';
+      if (isComp) badge = '<span class="mock-badge done">&#10003; 완료</span>';
+      else if (pct === 100) badge = '<span class="mock-badge done">완료</span>';
       else if (done > 0) badge = `<span class="mock-badge partial">${pct}%</span>`;
 
-      mockHtml += `<div class="mock-item" onclick="startQuiz('cat:${c}')">
+      mockHtml += `<div class="mock-item${isComp ? ' completed' : ''}" onclick="startQuiz('cat:${c}')">
         <div class="mock-item-title">${c.replace(year + '년 ', '')}</div>
         <div class="mock-item-info">
           <span>${qs.length}문제</span>
@@ -797,6 +894,9 @@ function toggleArchive() {
 }
 
 // ===== QUIZ =====
+let currentFilter = '';
+let pendingResumeIdx = 0;
+
 function startQuiz(filter) {
   let qs = [];
   if (filter === 'all_mock') qs = getMockQs();
@@ -822,8 +922,40 @@ function startQuiz(filter) {
 
   currentQuiz = qs;
   currentIdx = 0;
+  currentFilter = filter;
   answered = {};
 
+  // Check for resume position
+  const lastPos = getLastPos(filter);
+  if (lastPos > 0 && lastPos < qs.length) {
+    pendingResumeIdx = lastPos;
+    document.getElementById('resumeDesc').textContent =
+      `이전에 ${lastPos + 1}번째 문제까지 봤습니다.\n이어서 보시겠습니까?`;
+    document.getElementById('resumePopup').style.display = 'flex';
+    return;
+  }
+
+  enterQuiz();
+}
+
+function startRandomQuiz(n) {
+  let qs = shuffle(getMockQs()).slice(0, n);
+  if (qs.length === 0) { showToast('문제가 없습니다'); return; }
+  currentQuiz = qs;
+  currentIdx = 0;
+  currentFilter = 'random_' + n;
+  answered = {};
+  enterQuiz();
+}
+
+function resumeFrom(idx) {
+  document.getElementById('resumePopup').style.display = 'none';
+  if (idx === -1) currentIdx = pendingResumeIdx;
+  else currentIdx = 0;
+  enterQuiz();
+}
+
+function enterQuiz() {
   document.getElementById('homeScreen').style.display = 'none';
   document.getElementById('qScreen').style.display = 'block';
   document.getElementById('resultScreen').style.display = 'none';
@@ -832,8 +964,22 @@ function startQuiz(filter) {
   document.getElementById('bookmarkBtn').style.display = 'inline';
   document.getElementById('sectionBar').style.display = 'flex';
   document.getElementById('progressBar').style.display = 'block';
-
+  updateCompleteBtn();
   renderQ();
+}
+
+function getLastPos(filter) {
+  try {
+    const data = JSON.parse(localStorage.getItem(LS.lastPos) || '{}');
+    return data[filter] || 0;
+  } catch { return 0; }
+}
+function saveLastPos() {
+  try {
+    const data = JSON.parse(localStorage.getItem(LS.lastPos) || '{}');
+    data[currentFilter] = currentIdx;
+    localStorage.setItem(LS.lastPos, JSON.stringify(data));
+  } catch {}
 }
 
 function renderQ() {
@@ -873,6 +1019,17 @@ function renderQ() {
       cls = 'correct-bold';
     }
 
+    // Study mode: highlight off, user tapped a choice
+    if (mode === 'study' && !showHighlight && answered[q.id] !== undefined) {
+      const sel = answered[q.id];
+      if (num === q.answer) {
+        cls = sel === num ? 'selected-correct' : 'show-correct';
+      } else if (num === sel) {
+        cls = 'selected-wrong';
+      }
+      cls += ' disabled';
+    }
+
     if (mode === 'practice' && answered[q.id] !== undefined) {
       const sel = answered[q.id];
       if (num === q.answer) {
@@ -893,7 +1050,8 @@ function renderQ() {
   // Result badge
   const badge = document.getElementById('resultBadge');
   badge.style.display = 'none';
-  if (mode === 'practice' && answered[q.id] !== undefined) {
+  const showBadge = (mode === 'practice' || (mode === 'study' && !showHighlight)) && answered[q.id] !== undefined;
+  if (showBadge) {
     badge.style.display = 'block';
     if (answered[q.id] === q.answer) {
       badge.className = 'result-badge correct';
@@ -907,7 +1065,10 @@ function renderQ() {
   // Explanation
   const explEl = document.getElementById('explanation');
   const explText = document.getElementById('explText');
-  if (mode === 'study' || (mode === 'practice' && answered[q.id] !== undefined)) {
+  const showExpl = (mode === 'study' && showHighlight) ||
+    (mode === 'study' && !showHighlight && answered[q.id] !== undefined) ||
+    (mode === 'practice' && answered[q.id] !== undefined);
+  if (showExpl) {
     if (q.explanation && q.explanation.trim()) {
       explEl.style.display = 'block';
       explText.textContent = q.explanation;
@@ -923,11 +1084,21 @@ function renderQ() {
   document.getElementById('navCounter').textContent =
     mode === 'practice' ? `${Object.keys(answered).length}/${currentQuiz.length}` : '';
 
+  // Save last position
+  saveLastPos();
+
   window.scrollTo(0, 0);
 }
 
 function selectChoice(qid, choice) {
-  if (mode === 'study') return;
+  // Study mode: if highlight is off, allow tapping to reveal answer
+  if (mode === 'study') {
+    if (showHighlight) return; // already showing answers
+    if (answered[qid] !== undefined) return;
+    answered[qid] = choice;
+    renderQ();
+    return;
+  }
   if (answered[qid] !== undefined) return;
 
   const q = currentQuiz[currentIdx];
@@ -939,6 +1110,7 @@ function selectChoice(qid, choice) {
     removeFromSet(LS.wrong, String(qid));
   } else {
     addToSet(LS.wrong, String(qid));
+    addToSet(LS.bookmarks, String(qid));
     removeFromSet(LS.correct, String(qid));
   }
   renderQ();
@@ -992,6 +1164,7 @@ function goHome() {
   document.getElementById('bottomNav').style.display = 'none';
   document.getElementById('backBtn').style.display = 'none';
   document.getElementById('bookmarkBtn').style.display = 'none';
+  document.getElementById('completeBtn').style.display = 'none';
   document.getElementById('sectionBar').style.display = 'none';
   document.getElementById('progressBar').style.display = 'none';
   document.getElementById('headerTitle').textContent = '생명보험 모의고사';
@@ -1031,6 +1204,37 @@ function toggleDark() {
   document.body.classList.toggle('dark', darkMode);
   localStorage.setItem(LS.dark, darkMode);
 }
+function markComplete() {
+  if (!currentQuiz.length) return;
+  const cat = currentQuiz[0].category;
+  if (!cat) return;
+  const comp = getSet(LS.completed);
+  if (comp.has(cat)) {
+    removeFromSet(LS.completed, cat);
+    showToast('완료 해제');
+  } else {
+    addToSet(LS.completed, cat);
+    showToast('학습 완료!');
+  }
+  updateCompleteBtn();
+}
+function updateCompleteBtn() {
+  const btn = document.getElementById('completeBtn');
+  if (!currentQuiz.length) { btn.style.display = 'none'; return; }
+  const cat = currentQuiz[0].category;
+  // Only show for single-category quizzes (specific mock exams)
+  const cats = new Set(currentQuiz.map(q => q.category));
+  if (cats.size !== 1 || !cat) { btn.style.display = 'none'; return; }
+  btn.style.display = 'inline';
+  const comp = getSet(LS.completed);
+  if (comp.has(cat)) {
+    btn.innerHTML = '&#10003; 완료됨';
+    btn.classList.add('complete-btn-active');
+  } else {
+    btn.innerHTML = '&#10003; 완료';
+    btn.classList.remove('complete-btn-active');
+  }
+}
 function toggleBookmark() {
   if (!currentQuiz.length) return;
   const q = currentQuiz[currentIdx];
@@ -1051,6 +1255,8 @@ function resetProgress() {
   localStorage.removeItem(LS.correct);
   localStorage.removeItem(LS.wrong);
   localStorage.removeItem(LS.bookmarks);
+  localStorage.removeItem(LS.completed);
+  localStorage.removeItem(LS.lastPos);
   showToast('초기화 완료');
   renderHome();
 }
@@ -1092,9 +1298,12 @@ document.addEventListener('keydown', e => {
   if (document.getElementById('qScreen').style.display !== 'block') return;
   if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextQ(); }
   if (e.key === 'ArrowLeft') { e.preventDefault(); prevQ(); }
-  if (e.key >= '1' && e.key <= '5' && mode === 'practice') {
-    const q = currentQuiz[currentIdx];
-    if (q) selectChoice(q.id, parseInt(e.key));
+  if (e.key >= '1' && e.key <= '5') {
+    const canSelect = mode === 'practice' || (mode === 'study' && !showHighlight);
+    if (canSelect) {
+      const q = currentQuiz[currentIdx];
+      if (q) selectChoice(q.id, parseInt(e.key));
+    }
   }
 });
 
