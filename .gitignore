@@ -3,3 +3,4 @@
 questions.json
 questions_*.json
 .DS_Store
+.vercel

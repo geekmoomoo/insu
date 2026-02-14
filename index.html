@@ -5,35 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>생명보험 문제은행</title>
+<title>생명보험 모의고사</title>
 <style>
 :root {
-  --primary: #2563eb;
-  --primary-light: #dbeafe;
-  --success: #16a34a;
-  --success-bg: #dcfce7;
-  --error: #dc2626;
-  --error-bg: #fee2e2;
-  --warning: #f59e0b;
-  --bg: #f8fafc;
-  --card: #ffffff;
-  --text: #1e293b;
-  --text-secondary: #64748b;
-  --border: #e2e8f0;
-  --shadow: 0 1px 3px rgba(0,0,0,0.1);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-  --radius: 12px;
-  --font: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  --bg: #f5f5f0;
+  --paper: #ffffff;
+  --text: #1a1a1a;
+  --text-sub: #666;
+  --border: #d0d0d0;
+  --accent: #1a3a6e;
+  --accent-light: #e8eef6;
+  --correct: #0d6a3a;
+  --correct-bg: #e6f4ed;
+  --wrong: #c62828;
+  --wrong-bg: #fde8e8;
+  --font: 'Apple SD Gothic Neo', -apple-system, 'Malgun Gothic', sans-serif;
 }
 .dark {
-  --bg: #0f172a;
-  --card: #1e293b;
-  --text: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --border: #334155;
-  --primary-light: #1e3a5f;
-  --success-bg: #14532d;
-  --error-bg: #7f1d1d;
+  --bg: #1a1a1e;
+  --paper: #242428;
+  --text: #e8e8e8;
+  --text-sub: #999;
+  --border: #444;
+  --accent: #6b9eff;
+  --accent-light: #1e2a40;
+  --correct: #4caf80;
+  --correct-bg: #1a2e22;
+  --wrong: #ef5350;
+  --wrong-bg: #2e1a1a;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -44,435 +43,520 @@ body {
   -webkit-tap-highlight-color: transparent;
   transition: background 0.3s, color 0.3s;
 }
-.container { max-width: 500px; margin: 0 auto; padding: 0 16px; }
 
-/* Header */
-.header {
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 16px;
+/* ===== EXAM PAPER HEADER ===== */
+.exam-header {
+  background: var(--paper);
+  border-bottom: 3px double var(--border);
+  padding: 16px 20px 12px;
   position: sticky; top: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  transition: background 0.3s;
 }
-.header-title { font-size: 17px; font-weight: 700; }
-.header-left { display: flex; align-items: center; gap: 8px; }
-.back-btn {
-  background: none; border: none; font-size: 22px; cursor: pointer;
-  color: var(--primary); padding: 4px; display: none;
+.exam-header-top {
+  display: flex; justify-content: space-between; align-items: center;
 }
-.header-right { display: flex; align-items: center; gap: 8px; }
-.icon-btn {
-  background: none; border: none; font-size: 20px; cursor: pointer;
-  padding: 6px; border-radius: 8px; color: var(--text-secondary);
-  transition: background 0.2s;
+.exam-title {
+  font-size: 16px; font-weight: 800; letter-spacing: -0.5px;
+  color: var(--accent);
 }
-.icon-btn:active { background: var(--border); }
-
-/* Progress Bar */
-.progress-wrap {
-  padding: 8px 16px;
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
+.exam-controls {
+  display: flex; gap: 8px; align-items: center;
+}
+.ctrl-btn {
+  background: none; border: 1px solid var(--border);
+  border-radius: 6px; padding: 5px 10px; font-size: 12px;
+  cursor: pointer; color: var(--text-sub); font-family: var(--font);
+  transition: all 0.2s;
+}
+.ctrl-btn:hover, .ctrl-btn.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+.back-arrow {
+  background: none; border: none; font-size: 20px;
+  cursor: pointer; color: var(--accent); padding: 4px 8px 4px 0;
   display: none;
 }
-.progress-bar {
-  height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+.exam-section-bar {
+  margin-top: 8px; font-size: 12px; color: var(--text-sub);
+  display: flex; justify-content: space-between; align-items: center;
 }
-.progress-fill {
-  height: 100%; background: var(--primary); border-radius: 2px;
+.section-label {
+  font-weight: 700; color: var(--accent);
+  padding: 2px 8px; background: var(--accent-light);
+  border-radius: 4px; font-size: 11px;
+}
+.progress-mini {
+  height: 3px; background: var(--border); border-radius: 2px;
+  margin-top: 6px; overflow: hidden;
+}
+.progress-mini-fill {
+  height: 100%; background: var(--accent); border-radius: 2px;
   transition: width 0.3s;
 }
-.progress-text {
-  font-size: 12px; color: var(--text-secondary);
-  margin-top: 4px; text-align: right;
-}
 
-/* Home Screen */
-.home { padding: 20px 0; }
-.home-title {
-  font-size: 24px; font-weight: 800; text-align: center;
-  margin-bottom: 4px;
+/* ===== CONTAINER ===== */
+.container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
+
+/* ===== HOME SCREEN ===== */
+.home { padding: 20px 0 40px; }
+.home-banner {
+  background: var(--paper);
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  padding: 20px; text-align: center;
+  margin-bottom: 20px;
 }
-.home-subtitle {
-  font-size: 13px; color: var(--text-secondary); text-align: center;
-  margin-bottom: 24px;
+.home-banner h1 {
+  font-size: 20px; font-weight: 800; color: var(--accent);
+  margin-bottom: 4px; letter-spacing: -0.5px;
+}
+.home-banner p {
+  font-size: 13px; color: var(--text-sub);
+}
+.home-banner .q-count {
+  font-size: 28px; font-weight: 800; color: var(--accent);
+  margin: 8px 0 2px;
 }
 
 /* Mode Toggle */
-.mode-toggle {
-  display: flex; background: var(--border); border-radius: 10px;
-  padding: 3px; margin-bottom: 20px;
+.mode-bar {
+  display: flex; gap: 0; margin-bottom: 16px;
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
 }
-.mode-btn {
-  flex: 1; padding: 10px; border: none; border-radius: 8px;
+.mode-item {
+  flex: 1; padding: 10px; border: none; background: var(--paper);
   font-size: 14px; font-weight: 600; cursor: pointer;
-  background: transparent; color: var(--text-secondary);
-  transition: all 0.2s; font-family: var(--font);
+  font-family: var(--font); color: var(--text-sub);
+  border-right: 1px solid var(--border);
+  transition: all 0.2s;
 }
-.mode-btn.active {
-  background: var(--card); color: var(--primary);
-  box-shadow: var(--shadow);
+.mode-item:last-child { border-right: none; }
+.mode-item.active {
+  background: var(--accent); color: #fff;
 }
 
 /* Category Cards */
-.cat-card {
-  background: var(--card); border-radius: var(--radius);
-  padding: 16px; margin-bottom: 12px;
+.cat-section { margin-bottom: 20px; }
+.cat-section-title {
+  font-size: 13px; font-weight: 700; color: var(--text-sub);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 8px; padding-left: 2px;
+}
+.cat-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.cat-item {
+  background: var(--paper);
   border: 1px solid var(--border);
-  cursor: pointer; transition: all 0.2s;
+  border-radius: 8px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
 }
-.cat-card:active { transform: scale(0.98); }
-.cat-card-header { display: flex; justify-content: space-between; align-items: center; }
-.cat-card-title { font-size: 16px; font-weight: 700; }
-.cat-card-count { font-size: 13px; color: var(--text-secondary); }
-.cat-card-progress {
-  margin-top: 10px; height: 6px; background: var(--border);
-  border-radius: 3px; overflow: hidden;
+.cat-item:active { transform: scale(0.97); }
+.cat-item-title {
+  font-size: 14px; font-weight: 700; margin-bottom: 2px;
+  color: var(--text);
 }
-.cat-card-progress-fill {
-  height: 100%; border-radius: 3px; transition: width 0.3s;
+.cat-item-sub {
+  font-size: 12px; color: var(--text-sub);
 }
-.cat-card-stats {
-  display: flex; justify-content: space-between;
-  margin-top: 6px; font-size: 12px; color: var(--text-secondary);
+.cat-item-bar {
+  height: 3px; background: var(--border); border-radius: 2px;
+  margin-top: 8px; overflow: hidden;
+}
+.cat-item-bar-fill {
+  height: 100%; background: var(--accent); border-radius: 2px;
 }
 
-/* Sub-categories */
-.sub-cats {
-  display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+/* Mock exam list */
+.mock-list {
+  display: flex; flex-direction: column; gap: 6px;
 }
-.sub-cat-btn {
-  padding: 6px 12px; border-radius: 16px; font-size: 12px;
-  border: 1px solid var(--border); background: var(--bg);
-  cursor: pointer; font-family: var(--font); color: var(--text);
+.mock-item {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: all 0.15s;
+}
+.mock-item:active { transform: scale(0.98); }
+.mock-item-title { font-size: 14px; font-weight: 600; }
+.mock-item-info {
+  font-size: 12px; color: var(--text-sub);
+  display: flex; gap: 8px; align-items: center;
+}
+.mock-badge {
+  padding: 2px 8px; border-radius: 10px; font-size: 11px;
+  font-weight: 600;
+}
+.mock-badge.done { background: var(--correct-bg); color: var(--correct); }
+.mock-badge.partial { background: var(--accent-light); color: var(--accent); }
+
+/* Special row */
+.special-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+  margin-bottom: 20px;
+}
+.special-btn {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 8px; text-align: center;
+  cursor: pointer; transition: all 0.15s;
+}
+.special-btn:active { transform: scale(0.97); }
+.special-btn-icon { font-size: 20px; margin-bottom: 2px; }
+.special-btn-label { font-size: 12px; font-weight: 600; }
+.special-btn-count { font-size: 11px; color: var(--text-sub); }
+
+/* Options */
+.options-row {
+  display: flex; gap: 8px; margin-bottom: 16px;
+}
+.opt-btn {
+  padding: 6px 14px; border-radius: 16px; font-size: 12px;
+  border: 1px solid var(--border); background: var(--paper);
+  cursor: pointer; font-family: var(--font); color: var(--text-sub);
   transition: all 0.2s;
 }
-.sub-cat-btn:active { background: var(--primary-light); }
+.opt-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
-/* Special Cards Row */
-.special-row {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-  margin-bottom: 12px;
+/* Stats */
+.stats-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  margin-bottom: 20px;
 }
-.special-card {
-  background: var(--card); border-radius: var(--radius);
-  padding: 14px; border: 1px solid var(--border);
-  cursor: pointer; text-align: center; transition: all 0.2s;
+.stat-box {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px; text-align: center;
 }
-.special-card:active { transform: scale(0.98); }
-.special-card-icon { font-size: 24px; margin-bottom: 4px; }
-.special-card-title { font-size: 14px; font-weight: 600; }
-.special-card-count { font-size: 12px; color: var(--text-secondary); }
+.stat-num { font-size: 24px; font-weight: 800; color: var(--accent); }
+.stat-label { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
 
-/* Stats Card */
-.stats-card {
-  background: var(--card); border-radius: var(--radius);
-  padding: 16px; border: 1px solid var(--border);
-  margin-bottom: 12px;
+/* ===== QUESTION SCREEN (EXAM PAPER STYLE) ===== */
+.q-screen { display: none; padding: 16px 0 100px; }
+.q-paper {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
-.stats-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
-  text-align: center;
-}
-.stat-num { font-size: 22px; font-weight: 800; color: var(--primary); }
-.stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-
-/* Options Row */
-.options-row {
-  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
-}
-.opt-chip {
-  padding: 8px 14px; border-radius: 20px; font-size: 13px;
-  border: 1px solid var(--border); background: var(--card);
-  cursor: pointer; font-family: var(--font); color: var(--text);
-  display: flex; align-items: center; gap: 4px; transition: all 0.2s;
-}
-.opt-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-/* Question Screen */
-.question-screen { display: none; padding: 16px 0 100px; }
-.q-number {
-  font-size: 13px; color: var(--text-secondary); font-weight: 600;
+.q-num-label {
+  font-size: 15px; font-weight: 800; color: var(--accent);
   margin-bottom: 12px;
 }
 .q-text {
-  font-size: 17px; font-weight: 600; line-height: 1.6;
-  margin-bottom: 24px;
+  font-size: 16px; font-weight: 500; line-height: 1.7;
+  margin-bottom: 20px;
+  word-break: keep-all;
+}
+.q-box {
+  background: var(--accent-light);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 12px 14px;
+  margin: -8px 0 20px;
+  font-size: 14px; line-height: 1.6;
 }
 
-/* Choices */
-.choice-list { display: flex; flex-direction: column; gap: 10px; }
-.choice-btn {
-  display: flex; align-items: flex-start; gap: 12px;
-  padding: 14px 16px; border-radius: var(--radius);
-  border: 2px solid var(--border); background: var(--card);
-  cursor: pointer; text-align: left; font-family: var(--font);
-  font-size: 15px; line-height: 1.5; color: var(--text);
-  transition: all 0.2s; width: 100%;
+/* Choices - exam paper style */
+.choice-list { display: flex; flex-direction: column; gap: 0; }
+.choice-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px dotted var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: 4px;
 }
-.choice-btn:active { transform: scale(0.99); }
-.choice-num {
-  min-width: 28px; height: 28px; border-radius: 50%;
-  background: var(--bg); display: flex; align-items: center;
-  justify-content: center; font-weight: 700; font-size: 13px;
-  flex-shrink: 0; color: var(--text-secondary);
-  transition: all 0.2s;
+.choice-row:last-child { border-bottom: none; }
+.choice-row:hover { background: rgba(0,0,0,0.02); }
+.choice-circle {
+  font-size: 16px; font-weight: 500;
+  min-width: 24px; flex-shrink: 0;
+  color: var(--text-sub);
+  padding-top: 1px;
 }
-.choice-text { flex: 1; padding-top: 3px; }
-
-/* Study Mode - Correct Answer Highlight */
-.choice-btn.correct-highlight {
-  border-color: var(--success);
-  background: var(--success-bg);
-}
-.choice-btn.correct-highlight .choice-num {
-  background: var(--success); color: white;
-}
-.choice-btn.correct-highlight .choice-text {
-  font-weight: 700; color: var(--success);
+.choice-content {
+  font-size: 15px; line-height: 1.6;
+  flex: 1; word-break: keep-all;
 }
 
-/* Practice Mode - After Selection */
-.choice-btn.selected-correct {
-  border-color: var(--success); background: var(--success-bg);
+/* Study mode - correct answer bold */
+.choice-row.correct-bold .choice-circle {
+  color: var(--correct); font-weight: 800;
 }
-.choice-btn.selected-correct .choice-num {
-  background: var(--success); color: white;
-}
-.choice-btn.selected-wrong {
-  border-color: var(--error); background: var(--error-bg);
-}
-.choice-btn.selected-wrong .choice-num {
-  background: var(--error); color: white;
-}
-.choice-btn.show-correct {
-  border-color: var(--success); background: var(--success-bg);
-}
-.choice-btn.show-correct .choice-num {
-  background: var(--success); color: white;
-}
-.choice-btn.disabled { pointer-events: none; opacity: 0.95; }
-
-/* Explanation */
-.explanation {
-  margin-top: 16px; padding: 14px; border-radius: var(--radius);
-  background: var(--primary-light); font-size: 14px;
-  line-height: 1.6; display: none;
-}
-.explanation-label {
-  font-weight: 700; color: var(--primary); margin-bottom: 4px;
+.choice-row.correct-bold .choice-content {
+  font-weight: 700; color: var(--correct);
 }
 
-/* Result Badge */
+/* Practice mode - selected */
+.choice-row.selected-correct {
+  background: var(--correct-bg);
+}
+.choice-row.selected-correct .choice-circle {
+  color: var(--correct); font-weight: 800;
+}
+.choice-row.selected-correct .choice-content {
+  font-weight: 700; color: var(--correct);
+}
+.choice-row.selected-wrong {
+  background: var(--wrong-bg);
+}
+.choice-row.selected-wrong .choice-circle {
+  color: var(--wrong); font-weight: 800;
+}
+.choice-row.selected-wrong .choice-content {
+  color: var(--wrong); text-decoration: line-through;
+}
+.choice-row.show-correct .choice-circle {
+  color: var(--correct); font-weight: 800;
+}
+.choice-row.show-correct .choice-content {
+  font-weight: 700; color: var(--correct);
+}
+.choice-row.disabled { pointer-events: none; }
+
+/* Result badge */
 .result-badge {
   display: none; text-align: center; margin-top: 16px;
   font-size: 15px; font-weight: 700; padding: 10px;
-  border-radius: var(--radius);
+  border-radius: 6px;
 }
-.result-badge.correct { background: var(--success-bg); color: var(--success); }
-.result-badge.wrong { background: var(--error-bg); color: var(--error); }
+.result-badge.correct { background: var(--correct-bg); color: var(--correct); }
+.result-badge.wrong { background: var(--wrong-bg); color: var(--wrong); }
+
+/* Explanation */
+.explanation {
+  margin-top: 16px; padding: 14px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  background: var(--accent-light);
+  font-size: 14px; line-height: 1.6;
+  display: none; border-radius: 0 4px 4px 0;
+}
+.explanation-label {
+  font-weight: 700; color: var(--accent); margin-bottom: 4px;
+  font-size: 13px;
+}
 
 /* Bottom Nav */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--card); border-top: 1px solid var(--border);
-  padding: 12px 16px; padding-bottom: max(12px, env(safe-area-inset-bottom));
+  background: var(--paper);
+  border-top: 2px solid var(--border);
+  padding: 10px 16px; padding-bottom: max(10px, env(safe-area-inset-bottom));
   display: none; z-index: 100;
 }
 .bottom-nav-inner {
-  max-width: 500px; margin: 0 auto;
+  max-width: 600px; margin: 0 auto;
   display: flex; justify-content: space-between; align-items: center;
 }
 .nav-btn {
-  padding: 10px 24px; border-radius: 10px;
-  border: none; font-size: 15px; font-weight: 600;
-  cursor: pointer; font-family: var(--font);
-  transition: all 0.2s;
+  padding: 10px 24px; border-radius: 6px;
+  border: 1px solid var(--border); font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: var(--font); background: var(--paper);
+  color: var(--text); transition: all 0.2s;
 }
 .nav-btn:active { transform: scale(0.96); }
-.nav-btn.prev { background: var(--border); color: var(--text); }
-.nav-btn.next { background: var(--primary); color: white; }
-.nav-btn:disabled { opacity: 0.4; pointer-events: none; }
-.nav-counter { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+.nav-btn.next { background: var(--accent); color: #fff; border-color: var(--accent); }
+.nav-btn:disabled { opacity: 0.3; pointer-events: none; }
+.nav-counter {
+  font-size: 13px; font-weight: 600; color: var(--text-sub);
+}
 
-/* Credit */
-.credit {
-  text-align: center; font-size: 12px; color: var(--text-secondary);
-  padding: 20px 0; margin-top: 8px;
+/* Exam Result */
+.result-screen { display: none; padding: 40px 0; text-align: center; }
+.result-score { font-size: 56px; font-weight: 800; color: var(--accent); }
+.result-pass { color: var(--correct); font-size: 22px; font-weight: 700; margin: 8px 0; }
+.result-fail { color: var(--wrong); font-size: 22px; font-weight: 700; margin: 8px 0; }
+.result-detail { color: var(--text-sub); font-size: 14px; margin: 4px 0; }
+.result-actions {
+  margin-top: 24px; display: flex; gap: 12px; justify-content: center;
 }
-.credit a { color: var(--primary); text-decoration: none; }
-
-/* Loading */
-.loading {
-  text-align: center; padding: 40px 20px;
-  color: var(--text-secondary); font-size: 14px;
+.result-btn {
+  padding: 12px 24px; border-radius: 8px; font-size: 14px;
+  font-weight: 600; cursor: pointer; border: 1px solid var(--border);
+  font-family: var(--font); background: var(--paper); color: var(--text);
 }
-.spinner {
-  width: 32px; height: 32px; border: 3px solid var(--border);
-  border-top-color: var(--primary); border-radius: 50%;
-  animation: spin 0.8s linear infinite; margin: 0 auto 12px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Toggle Switch */
-.toggle-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 0;
-}
-.toggle-label { font-size: 14px; font-weight: 600; }
-.toggle {
-  width: 48px; height: 28px; border-radius: 14px;
-  background: var(--border); position: relative; cursor: pointer;
-  transition: background 0.2s;
-}
-.toggle.on { background: var(--primary); }
-.toggle-knob {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: white; position: absolute; top: 3px; left: 3px;
-  transition: transform 0.2s; box-shadow: var(--shadow);
-}
-.toggle.on .toggle-knob { transform: translateX(20px); }
-
-/* Scroll */
-.screen { min-height: calc(100vh - 60px); }
+.result-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
 
 /* Toast */
 .toast {
   position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
   background: var(--text); color: var(--bg); padding: 10px 20px;
-  border-radius: 20px; font-size: 14px; z-index: 200;
+  border-radius: 20px; font-size: 13px; z-index: 200;
   opacity: 0; transition: opacity 0.3s; pointer-events: none;
 }
 .toast.show { opacity: 1; }
 
-/* Exam Result */
-.exam-result { padding: 20px 0; text-align: center; }
-.exam-score { font-size: 48px; font-weight: 800; color: var(--primary); }
-.exam-pass { color: var(--success); font-size: 20px; font-weight: 700; margin: 8px 0; }
-.exam-fail { color: var(--error); font-size: 20px; font-weight: 700; margin: 8px 0; }
-.exam-detail { color: var(--text-secondary); font-size: 14px; margin: 4px 0; }
-.exam-actions { margin-top: 24px; display: flex; gap: 12px; justify-content: center; }
-.exam-btn {
-  padding: 12px 24px; border-radius: 10px; font-size: 15px;
-  font-weight: 600; cursor: pointer; border: none;
-  font-family: var(--font);
+/* Loading */
+.loading {
+  text-align: center; padding: 60px 20px;
+  color: var(--text-sub); font-size: 14px;
 }
-.exam-btn.primary { background: var(--primary); color: white; }
-.exam-btn.secondary { background: var(--border); color: var(--text); }
+.spinner {
+  width: 28px; height: 28px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Study mode toggle */
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; margin-bottom: 8px;
+}
+.toggle-label { font-size: 13px; font-weight: 600; color: var(--text-sub); }
+.toggle {
+  width: 44px; height: 24px; border-radius: 12px;
+  background: var(--border); position: relative; cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle.on { background: var(--accent); }
+.toggle-knob {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: white; position: absolute; top: 2px; left: 2px;
+  transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle.on .toggle-knob { transform: translateX(20px); }
+
+.credit {
+  text-align: center; font-size: 11px; color: var(--text-sub);
+  padding: 20px 0;
+}
 </style>
 </head>
 <body>
 
 <!-- Header -->
-<div class="header">
-  <div class="header-left">
-    <button class="back-btn" onclick="goBack()">&larr;</button>
-    <span class="header-title" id="headerTitle">생명보험 문제은행</span>
+<div class="exam-header">
+  <div class="exam-header-top">
+    <div style="display:flex;align-items:center">
+      <button class="back-arrow" id="backBtn" onclick="goBack()">&#8592;</button>
+      <span class="exam-title" id="headerTitle">생명보험 모의고사</span>
+    </div>
+    <div class="exam-controls">
+      <button class="ctrl-btn" id="bookmarkBtn" style="display:none" onclick="toggleBookmark()">&#9734;</button>
+      <button class="ctrl-btn" onclick="toggleDark()">&#9790;</button>
+    </div>
   </div>
-  <div class="header-right">
-    <button class="icon-btn" id="bookmarkBtn" onclick="toggleBookmark()" style="display:none" title="북마크">&#9734;</button>
-    <button class="icon-btn" onclick="toggleDark()" title="다크모드">&#9790;</button>
+  <div class="exam-section-bar" id="sectionBar" style="display:none">
+    <span class="section-label" id="sectionLabel"></span>
+    <span id="progressLabel"></span>
+  </div>
+  <div class="progress-mini" id="progressBar" style="display:none">
+    <div class="progress-mini-fill" id="progressFill"></div>
   </div>
 </div>
 
-<!-- Progress -->
-<div class="progress-wrap" id="progressWrap">
-  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-  <div class="progress-text" id="progressText"></div>
-</div>
-
-<!-- Home Screen -->
-<div class="screen" id="homeScreen">
+<!-- Home -->
+<div id="homeScreen">
   <div class="container home">
-    <div class="home-title">생명보험 문제은행</div>
-    <div class="home-subtitle">김토리쌤 강의 기반 | 60점 커트라인 돌파!</div>
-
-    <!-- Mode Toggle -->
-    <div class="mode-toggle">
-      <button class="mode-btn active" onclick="setMode('study')" id="modeStudy">&#128214; 학습 모드</button>
-      <button class="mode-btn" onclick="setMode('practice')" id="modePractice">&#127919; 연습 모드</button>
+    <div class="home-banner">
+      <h1>생명보험·제3보험 모의고사</h1>
+      <p>모집인 등록자격시험 문제은행 (2024~2025)</p>
+      <div class="q-count" id="totalCount">0</div>
+      <p>문제</p>
     </div>
 
-    <!-- Study Mode Toggle -->
-    <div id="studyOptions" style="margin-bottom:16px">
+    <!-- Mode -->
+    <div class="mode-bar">
+      <button class="mode-item active" id="modeStudy" onclick="setMode('study')">학습모드</button>
+      <button class="mode-item" id="modePractice" onclick="setMode('practice')">시험모드</button>
+    </div>
+
+    <!-- Study options -->
+    <div id="studyOptions">
       <div class="toggle-row">
-        <span class="toggle-label">정답 하이라이트 표시</span>
+        <span class="toggle-label">정답 볼드 표시</span>
         <div class="toggle on" id="highlightToggle" onclick="toggleHighlight()">
           <div class="toggle-knob"></div>
         </div>
       </div>
     </div>
 
-    <!-- Category Cards -->
-    <div id="categoryCards"></div>
-
-    <!-- Special Cards -->
-    <div class="special-row">
-      <div class="special-card" onclick="startQuiz('bookmarks')">
-        <div class="special-card-icon">&#11088;</div>
-        <div class="special-card-title">북마크</div>
-        <div class="special-card-count" id="bookmarkCount">0문제</div>
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-num" id="statTotal">0</div>
+        <div class="stat-label">전체</div>
       </div>
-      <div class="special-card" onclick="startQuiz('wrong')">
-        <div class="special-card-icon">&#10060;</div>
-        <div class="special-card-title">오답노트</div>
-        <div class="special-card-count" id="wrongCount">0문제</div>
+      <div class="stat-box">
+        <div class="stat-num" id="statDone">0</div>
+        <div class="stat-label">완료</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="statRate">-</div>
+        <div class="stat-label">정답률</div>
       </div>
     </div>
 
-    <!-- All Questions -->
-    <div class="cat-card" onclick="startQuiz('all')">
-      <div class="cat-card-header">
-        <span class="cat-card-title">&#128202; 전체 문제 풀기</span>
-        <span class="cat-card-count" id="allCount"></span>
+    <!-- Special -->
+    <div class="special-row">
+      <div class="special-btn" onclick="startQuiz('all_mock')">
+        <div class="special-btn-icon">&#128221;</div>
+        <div class="special-btn-label">전체</div>
+        <div class="special-btn-count" id="allCount">0</div>
+      </div>
+      <div class="special-btn" onclick="startQuiz('bookmarks')">
+        <div class="special-btn-icon">&#9733;</div>
+        <div class="special-btn-label">북마크</div>
+        <div class="special-btn-count" id="bmCount">0</div>
+      </div>
+      <div class="special-btn" onclick="startQuiz('wrong')">
+        <div class="special-btn-icon">&#10060;</div>
+        <div class="special-btn-label">오답</div>
+        <div class="special-btn-count" id="wrongCount">0</div>
       </div>
     </div>
 
     <!-- Options -->
     <div class="options-row">
-      <div class="opt-chip" id="shuffleChip" onclick="toggleShuffle()">&#128256; 셔플</div>
-      <div class="opt-chip" onclick="resetProgress()">&#128260; 초기화</div>
+      <button class="opt-btn" id="shuffleBtn" onclick="toggleShuffle()">&#128256; 셔플</button>
+      <button class="opt-btn" onclick="resetProgress()">&#128260; 초기화</button>
     </div>
 
-    <!-- Stats -->
-    <div class="stats-card">
-      <div class="stats-grid">
-        <div><div class="stat-num" id="statTotal">0</div><div class="stat-label">전체 문제</div></div>
-        <div><div class="stat-num" id="statDone">0</div><div class="stat-label">풀은 문제</div></div>
-        <div><div class="stat-num" id="statCorrect">0</div><div class="stat-label">정답률</div></div>
-      </div>
-    </div>
+    <!-- Section-based study -->
+    <div class="cat-section" id="sectionStudy"></div>
 
-    <div class="credit">출처: <a href="https://www.youtube.com/@kimtory_ssam" target="_blank">김토리쌤 YouTube</a></div>
+    <!-- 2025 Mock Exams (Primary) -->
+    <div class="cat-section" id="mockSection"></div>
+
+    <!-- Archive (collapsible) -->
+    <div class="cat-section" id="archiveSection"></div>
+
+    <div class="credit">2025 생명보험 모의고사 기출문제 기반</div>
   </div>
 </div>
 
 <!-- Question Screen -->
-<div class="screen question-screen" id="questionScreen">
+<div class="q-screen" id="qScreen">
   <div class="container">
-    <div class="q-number" id="qNumber"></div>
-    <div class="q-text" id="qText"></div>
-    <div class="choice-list" id="choiceList"></div>
+    <div class="q-paper">
+      <div class="q-num-label" id="qNum"></div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-box" id="qBox" style="display:none"></div>
+      <div class="choice-list" id="choiceList"></div>
+    </div>
     <div class="result-badge" id="resultBadge"></div>
     <div class="explanation" id="explanation">
-      <div class="explanation-label">&#128161; 해설</div>
-      <div id="explanationText"></div>
+      <div class="explanation-label">해설</div>
+      <div id="explText"></div>
     </div>
   </div>
 </div>
 
-<!-- Exam Result Screen -->
-<div class="screen" id="resultScreen" style="display:none">
-  <div class="container exam-result">
-    <div id="resultContent"></div>
-  </div>
+<!-- Result Screen -->
+<div class="result-screen" id="resultScreen">
+  <div class="container" id="resultContent"></div>
 </div>
 
 <!-- Bottom Nav -->
 <div class="bottom-nav" id="bottomNav">
   <div class="bottom-nav-inner">
-    <button class="nav-btn prev" id="prevBtn" onclick="prevQ()">&#9664; 이전</button>
+    <button class="nav-btn" id="prevBtn" onclick="prevQ()">&#9664; 이전</button>
     <span class="nav-counter" id="navCounter"></span>
     <button class="nav-btn next" id="nextBtn" onclick="nextQ()">다음 &#9654;</button>
   </div>
@@ -482,66 +566,38 @@ body {
 <div class="toast" id="toast"></div>
 
 <!-- Loading -->
-<div class="loading" id="loadingScreen">
+<div class="loading" id="loading">
   <div class="spinner"></div>
-  <div>문제 데이터를 불러오는 중...</div>
+  <div>문제 불러오는 중...</div>
 </div>
 
 <script src="data.js"></script>
 <script>
-// ========== STATE ==========
+// ===== STATE =====
 let allQuestions = [];
 let currentQuiz = [];
 let currentIdx = 0;
-let mode = 'study'; // 'study' | 'practice'
+let mode = 'study';
 let showHighlight = true;
 let shuffleEnabled = false;
 let darkMode = false;
-let answered = {}; // { qid: selectedChoice }
+let answered = {};
 
-// localStorage keys
 const LS = {
-  bookmarks: 'insu_bookmarks',
-  wrong: 'insu_wrong',
-  answered: 'insu_answered',
-  correct: 'insu_correct',
+  bookmarks: 'insu_bm2',
+  wrong: 'insu_wr2',
+  answered: 'insu_ans2',
+  correct: 'insu_cor2',
   mode: 'insu_mode',
-  highlight: 'insu_highlight',
-  shuffle: 'insu_shuffle',
-  dark: 'insu_dark',
+  highlight: 'insu_hl',
+  shuffle: 'insu_shf',
+  dark: 'insu_dk',
 };
 
-// ========== LOAD DATA ==========
-async function loadData() {
-  // Try fetching from JSON files first (works with HTTP server)
-  const files = [
-    'questions_basic.json',
-    'questions_expected.json',
-    'questions_mock.json'
-  ];
+const CIRCLES = ['\u2460','\u2461','\u2462','\u2463','\u2464'];
 
-  let all = [];
-  for (const f of files) {
-    try {
-      const res = await fetch(f);
-      if (res.ok) {
-        const data = await res.json();
-        all = all.concat(data);
-      }
-    } catch(e) { /* skip */ }
-  }
-
-  // Fallback to embedded data (works with file:// protocol)
-  if (all.length === 0 && typeof EMBEDDED_DATA !== 'undefined') {
-    all = EMBEDDED_DATA;
-  }
-
-  return all;
-}
-
-// ========== INIT ==========
-async function init() {
-  // Load preferences
+// ===== INIT =====
+function init() {
   mode = localStorage.getItem(LS.mode) || 'study';
   showHighlight = localStorage.getItem(LS.highlight) !== 'false';
   shuffleEnabled = localStorage.getItem(LS.shuffle) === 'true';
@@ -552,243 +608,278 @@ async function init() {
   updateHighlightUI();
   updateShuffleUI();
 
-  // Load questions
-  allQuestions = await loadData();
-
-  // Re-assign IDs to ensure uniqueness
+  if (typeof EMBEDDED_DATA !== 'undefined') {
+    allQuestions = EMBEDDED_DATA;
+  }
   allQuestions.forEach((q, i) => q.id = i + 1);
 
-  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('loading').style.display = 'none';
   renderHome();
 }
 
-// ========== HOME ==========
-function renderHome() {
-  // Group by category
-  const cats = {};
-  allQuestions.forEach(q => {
-    const cat = q.category;
-    if (!cats[cat]) cats[cat] = [];
-    cats[cat].push(q);
-  });
-
-  const savedAnswered = getSet(LS.answered);
-  const savedCorrect = getSet(LS.correct);
-  const bookmarks = getSet(LS.bookmarks);
-  const wrong = getSet(LS.wrong);
-
-  // Build category cards
-  const cardsEl = document.getElementById('categoryCards');
-  const colors = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#6366f1'];
-  let html = '';
-  let colorIdx = 0;
-
-  // Group mock exam sub-categories
-  const catOrder = [];
-  const mockCats = [];
-  Object.keys(cats).sort().forEach(c => {
-    if (c.startsWith('모의고사')) mockCats.push(c);
-    else catOrder.push(c);
-  });
-
-  // Add regular categories
-  catOrder.forEach(cat => {
-    const qs = cats[cat];
-    const done = qs.filter(q => savedAnswered.has(String(q.id))).length;
-    const pct = qs.length > 0 ? Math.round(done/qs.length*100) : 0;
-    const color = colors[colorIdx++ % colors.length];
-    const icons = {'기본이론':'&#128214;','예상문제':'&#128221;'};
-    const icon = icons[cat] || '&#128203;';
-    html += `
-      <div class="cat-card" onclick="startQuiz('cat:${cat}')">
-        <div class="cat-card-header">
-          <span class="cat-card-title">${icon} ${cat}</span>
-          <span class="cat-card-count">${qs.length}문제</span>
-        </div>
-        <div class="cat-card-progress">
-          <div class="cat-card-progress-fill" style="width:${pct}%;background:${color}"></div>
-        </div>
-        <div class="cat-card-stats">
-          <span>진행률 ${pct}%</span>
-          <span>${done}/${qs.length}</span>
-        </div>
-      </div>`;
-  });
-
-  // Mock exam card with sub-categories
-  if (mockCats.length > 0) {
-    const allMockQs = mockCats.flatMap(c => cats[c]);
-    const done = allMockQs.filter(q => savedAnswered.has(String(q.id))).length;
-    const pct = allMockQs.length > 0 ? Math.round(done/allMockQs.length*100) : 0;
-    const color = colors[colorIdx++ % colors.length];
-
-    let subHtml = '<div class="sub-cats">';
-    mockCats.forEach(mc => {
-      const count = cats[mc].length;
-      subHtml += `<button class="sub-cat-btn" onclick="event.stopPropagation();startQuiz('cat:${mc}')">${mc} (${count})</button>`;
-    });
-    subHtml += '</div>';
-
-    html += `
-      <div class="cat-card" onclick="startQuiz('cat_prefix:모의고사')">
-        <div class="cat-card-header">
-          <span class="cat-card-title">&#128203; 모의고사</span>
-          <span class="cat-card-count">${allMockQs.length}문제</span>
-        </div>
-        <div class="cat-card-progress">
-          <div class="cat-card-progress-fill" style="width:${pct}%;background:${color}"></div>
-        </div>
-        <div class="cat-card-stats">
-          <span>진행률 ${pct}%</span>
-          <span>${done}/${allMockQs.length}</span>
-        </div>
-        ${subHtml}
-      </div>`;
-  }
-
-  cardsEl.innerHTML = html;
-
-  // Update counts
-  document.getElementById('bookmarkCount').textContent = bookmarks.size + '문제';
-  document.getElementById('wrongCount').textContent = wrong.size + '문제';
-  document.getElementById('allCount').textContent = allQuestions.length + '문제';
-
-  // Stats
-  document.getElementById('statTotal').textContent = allQuestions.length;
-  document.getElementById('statDone').textContent = savedAnswered.size;
-  const correctRate = savedAnswered.size > 0
-    ? Math.round(savedCorrect.size / savedAnswered.size * 100) + '%'
-    : '-';
-  document.getElementById('statCorrect').textContent = correctRate;
+// ===== HOME =====
+function getMockQs() {
+  return allQuestions.filter(q => !q.archive);
+}
+function getArchiveQs() {
+  return allQuestions.filter(q => q.archive);
 }
 
-// ========== QUIZ ==========
+function renderHome() {
+  const saved = getSet(LS.answered);
+  const correct = getSet(LS.correct);
+  const bm = getSet(LS.bookmarks);
+  const wrong = getSet(LS.wrong);
+
+  const mockQs = getMockQs();
+  const archiveQs = getArchiveQs();
+  const mockSaved = mockQs.filter(q => saved.has(String(q.id)));
+  const mockCorrect = mockQs.filter(q => correct.has(String(q.id)));
+
+  document.getElementById('totalCount').textContent = mockQs.length;
+  document.getElementById('allCount').textContent = mockQs.length + '문제';
+  document.getElementById('bmCount').textContent = bm.size + '문제';
+  document.getElementById('wrongCount').textContent = wrong.size + '문제';
+  document.getElementById('statTotal').textContent = mockQs.length;
+  document.getElementById('statDone').textContent = mockSaved.length;
+  document.getElementById('statRate').textContent =
+    mockSaved.length > 0 ? Math.round(mockCorrect.length / mockSaved.length * 100) + '%' : '-';
+
+  // Group mock categories by year
+  const cats = {};
+  mockQs.forEach(q => {
+    const c = q.category;
+    if (!cats[c]) cats[c] = [];
+    cats[c].push(q);
+  });
+
+  // Section-based study (보험이론, 보험법규, 생명보험, 제3보험)
+  const sections = {};
+  mockQs.forEach(q => {
+    const s = q.section || '기타';
+    if (!sections[s]) sections[s] = [];
+    sections[s].push(q);
+  });
+  const sectionOrder = ['보험이론 및 윤리', '보험법규', '생명보험', '제3보험'];
+  let secHtml = '<div class="cat-section-title">영역별 학습</div>';
+  secHtml += '<div class="cat-grid">';
+  sectionOrder.forEach(s => {
+    const qs = sections[s] || [];
+    if (qs.length === 0) return;
+    const done = qs.filter(q => saved.has(String(q.id))).length;
+    const pct = qs.length > 0 ? Math.round(done / qs.length * 100) : 0;
+    secHtml += `<div class="cat-item" onclick="startQuiz('section:${s}')">
+      <div class="cat-item-title">${s}</div>
+      <div class="cat-item-sub">${qs.length}문제${done > 0 ? ' · ' + pct + '%' : ''}</div>
+      <div class="cat-item-bar"><div class="cat-item-bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  });
+  secHtml += '</div>';
+  document.getElementById('sectionStudy').innerHTML = secHtml;
+
+  // Separate by year
+  const years = {};
+  Object.keys(cats).sort().forEach(c => {
+    const ym = c.match(/^(\d{4})년/);
+    const year = ym ? ym[1] : '기타';
+    if (!years[year]) years[year] = [];
+    years[year].push(c);
+  });
+
+  // Render mock exams by year (newest first)
+  let mockHtml = '';
+  Object.keys(years).sort().reverse().forEach(year => {
+    const yearCats = years[year];
+    const yearQs = yearCats.flatMap(c => cats[c]);
+    const yearDone = yearQs.filter(q => saved.has(String(q.id))).length;
+    const yearPct = yearQs.length > 0 ? Math.round(yearDone / yearQs.length * 100) : 0;
+
+    mockHtml += `<div class="cat-section-title">${year}년 모의고사 (${yearCats.length}회 · ${yearQs.length}문제${yearDone > 0 ? ' · ' + yearPct + '%' : ''})</div>`;
+    mockHtml += '<div class="mock-list">';
+
+    yearCats.forEach(c => {
+      const qs = cats[c];
+      const done = qs.filter(q => saved.has(String(q.id))).length;
+      const pct = qs.length > 0 ? Math.round(done / qs.length * 100) : 0;
+      let badge = '';
+      if (pct === 100) badge = '<span class="mock-badge done">완료</span>';
+      else if (done > 0) badge = `<span class="mock-badge partial">${pct}%</span>`;
+
+      mockHtml += `<div class="mock-item" onclick="startQuiz('cat:${c}')">
+        <div class="mock-item-title">${c.replace(year + '년 ', '')}</div>
+        <div class="mock-item-info">
+          <span>${qs.length}문제</span>
+          ${badge}
+        </div>
+      </div>`;
+    });
+    mockHtml += '</div>';
+  });
+  document.getElementById('mockSection').innerHTML = mockHtml;
+
+  // Render archive (collapsible)
+  if (archiveQs.length > 0) {
+    const archiveCats = {};
+    archiveQs.forEach(q => {
+      const c = q.category;
+      if (!archiveCats[c]) archiveCats[c] = [];
+      archiveCats[c].push(q);
+    });
+
+    let arcHtml = `<div class="cat-section-title" style="cursor:pointer;display:flex;align-items:center;gap:6px" onclick="toggleArchive()">
+      <span id="archiveArrow" style="transition:transform 0.2s;display:inline-block">&#9654;</span>
+      아카이브 (유튜브 강의 자료 · ${archiveQs.length}문제)
+    </div>`;
+    arcHtml += '<div class="mock-list" id="archiveList" style="display:none">';
+    arcHtml += `<div style="font-size:12px;color:var(--text-sub);padding:8px 0;line-height:1.5">
+      유튜브 강의에서 추출한 보충 자료입니다.<br>실제 시험과 형식이 다를 수 있습니다.
+    </div>`;
+
+    Object.keys(archiveCats).sort().forEach(c => {
+      const qs = archiveCats[c];
+      const done = qs.filter(q => saved.has(String(q.id))).length;
+      const pct = qs.length > 0 ? Math.round(done / qs.length * 100) : 0;
+      let badge = '';
+      if (pct === 100) badge = '<span class="mock-badge done">완료</span>';
+      else if (done > 0) badge = `<span class="mock-badge partial">${pct}%</span>`;
+
+      arcHtml += `<div class="mock-item" onclick="startQuiz('cat:${c}')">
+        <div class="mock-item-title">${c}</div>
+        <div class="mock-item-info">
+          <span>${qs.length}문제</span>
+          ${badge}
+        </div>
+      </div>`;
+    });
+    arcHtml += '</div>';
+    document.getElementById('archiveSection').innerHTML = arcHtml;
+  }
+}
+
+// ===== ARCHIVE TOGGLE =====
+function toggleArchive() {
+  const list = document.getElementById('archiveList');
+  const arrow = document.getElementById('archiveArrow');
+  if (list.style.display === 'none') {
+    list.style.display = 'flex';
+    arrow.style.transform = 'rotate(90deg)';
+  } else {
+    list.style.display = 'none';
+    arrow.style.transform = 'rotate(0deg)';
+  }
+}
+
+// ===== QUIZ =====
 function startQuiz(filter) {
   let qs = [];
-
-  if (filter === 'all') {
-    qs = [...allQuestions];
-  } else if (filter === 'bookmarks') {
+  if (filter === 'all_mock') qs = getMockQs();
+  else if (filter === 'all') qs = [...allQuestions];
+  else if (filter === 'bookmarks') {
     const bm = getSet(LS.bookmarks);
     qs = allQuestions.filter(q => bm.has(String(q.id)));
   } else if (filter === 'wrong') {
     const wr = getSet(LS.wrong);
     qs = allQuestions.filter(q => wr.has(String(q.id)));
+  } else if (filter.startsWith('section:')) {
+    const sec = filter.substring(8);
+    qs = getMockQs().filter(q => q.section === sec);
   } else if (filter.startsWith('cat:')) {
-    const cat = filter.substring(4);
-    qs = allQuestions.filter(q => q.category === cat);
+    qs = allQuestions.filter(q => q.category === filter.substring(4));
   } else if (filter.startsWith('cat_prefix:')) {
-    const prefix = filter.substring(11);
-    qs = allQuestions.filter(q => q.category.startsWith(prefix));
+    const pfx = filter.substring(11);
+    qs = allQuestions.filter(q => q.category.startsWith(pfx));
   }
 
-  if (qs.length === 0) {
-    showToast('문제가 없습니다');
-    return;
-  }
-
-  if (shuffleEnabled) {
-    qs = shuffleArray(qs);
-  }
+  if (qs.length === 0) { showToast('문제가 없습니다'); return; }
+  if (shuffleEnabled) qs = shuffle(qs);
 
   currentQuiz = qs;
   currentIdx = 0;
   answered = {};
 
-  showQuestionScreen();
-  renderQuestion();
-}
-
-function showQuestionScreen() {
   document.getElementById('homeScreen').style.display = 'none';
-  document.getElementById('questionScreen').style.display = 'block';
+  document.getElementById('qScreen').style.display = 'block';
   document.getElementById('resultScreen').style.display = 'none';
-  document.getElementById('progressWrap').style.display = 'block';
   document.getElementById('bottomNav').style.display = 'block';
-  document.querySelector('.back-btn').style.display = 'block';
-  document.getElementById('bookmarkBtn').style.display = 'block';
-  window.scrollTo(0, 0);
+  document.getElementById('backBtn').style.display = 'inline';
+  document.getElementById('bookmarkBtn').style.display = 'inline';
+  document.getElementById('sectionBar').style.display = 'flex';
+  document.getElementById('progressBar').style.display = 'block';
+
+  renderQ();
 }
 
-function renderQuestion() {
-  if (currentIdx >= currentQuiz.length) {
-    showResult();
-    return;
-  }
+function renderQ() {
+  if (currentIdx >= currentQuiz.length) { showResult(); return; }
 
   const q = currentQuiz[currentIdx];
+  const section = q.section || q.category;
 
   // Header
   document.getElementById('headerTitle').textContent = q.category;
-
-  // Progress
+  document.getElementById('sectionLabel').textContent = section;
   const pct = ((currentIdx + 1) / currentQuiz.length * 100).toFixed(0);
   document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressText').textContent =
-    `${currentIdx + 1} / ${currentQuiz.length}`;
+  document.getElementById('progressLabel').textContent = `${currentIdx + 1} / ${currentQuiz.length}`;
 
-  // Question
-  document.getElementById('qNumber').textContent = `Q${currentIdx + 1}.`;
-  document.getElementById('qText').textContent = q.question;
+  // Question number
+  const srcNum = q.source_q_num || (currentIdx + 1);
+  document.getElementById('qNum').textContent = `${srcNum}.`;
+
+  // Question text - check if there's a box/table content
+  const qText = q.question;
+  document.getElementById('qText').textContent = qText;
+  document.getElementById('qBox').style.display = 'none';
 
   // Bookmark
   const bm = getSet(LS.bookmarks);
   document.getElementById('bookmarkBtn').innerHTML = bm.has(String(q.id)) ? '&#9733;' : '&#9734;';
 
   // Choices
-  const listEl = document.getElementById('choiceList');
-  let choicesHtml = '';
-  const nums = ['①','②','③','④','⑤'];
-
+  const list = document.getElementById('choiceList');
+  let html = '';
   q.choices.forEach((c, i) => {
     const num = i + 1;
-    let extraClass = '';
+    let cls = '';
 
     if (mode === 'study' && showHighlight && num === q.answer) {
-      extraClass = 'correct-highlight';
+      cls = 'correct-bold';
     }
 
-    // If already answered in practice mode
     if (mode === 'practice' && answered[q.id] !== undefined) {
-      const selected = answered[q.id];
+      const sel = answered[q.id];
       if (num === q.answer) {
-        extraClass = selected === num ? 'selected-correct' : 'show-correct';
-      } else if (num === selected) {
-        extraClass = 'selected-wrong';
+        cls = sel === num ? 'selected-correct' : 'show-correct';
+      } else if (num === sel) {
+        cls = 'selected-wrong';
       }
-      extraClass += ' disabled';
+      cls += ' disabled';
     }
 
-    choicesHtml += `
-      <button class="choice-btn ${extraClass}"
-        onclick="selectChoice(${q.id}, ${num})"
-        ${answered[q.id] !== undefined && mode === 'practice' ? 'disabled' : ''}>
-        <span class="choice-num">${nums[i]}</span>
-        <span class="choice-text">${escHtml(c)}</span>
-      </button>`;
+    html += `<div class="choice-row ${cls}" onclick="selectChoice(${q.id},${num})">
+      <span class="choice-circle">${CIRCLES[i]}</span>
+      <span class="choice-content">${esc(c)}</span>
+    </div>`;
   });
-
-  listEl.innerHTML = choicesHtml;
+  list.innerHTML = html;
 
   // Result badge
   const badge = document.getElementById('resultBadge');
   badge.style.display = 'none';
-  badge.className = 'result-badge';
-
   if (mode === 'practice' && answered[q.id] !== undefined) {
     badge.style.display = 'block';
     if (answered[q.id] === q.answer) {
       badge.className = 'result-badge correct';
-      badge.textContent = '✅ 정답!';
+      badge.textContent = '정답!';
     } else {
       badge.className = 'result-badge wrong';
-      badge.textContent = '❌ 오답';
+      badge.textContent = '오답 (정답: ' + CIRCLES[q.answer - 1] + ')';
     }
   }
 
   // Explanation
   const explEl = document.getElementById('explanation');
-  const explText = document.getElementById('explanationText');
+  const explText = document.getElementById('explText');
   if (mode === 'study' || (mode === 'practice' && answered[q.id] !== undefined)) {
     if (q.explanation && q.explanation.trim()) {
       explEl.style.display = 'block';
@@ -809,17 +900,12 @@ function renderQuestion() {
 }
 
 function selectChoice(qid, choice) {
-  if (mode === 'study') {
-    // In study mode, tapping just shows info - no selection needed
-    return;
-  }
-
+  if (mode === 'study') return;
   if (answered[qid] !== undefined) return;
 
   const q = currentQuiz[currentIdx];
   answered[qid] = choice;
 
-  // Save to localStorage
   addToSet(LS.answered, String(qid));
   if (choice === q.answer) {
     addToSet(LS.correct, String(qid));
@@ -828,124 +914,96 @@ function selectChoice(qid, choice) {
     addToSet(LS.wrong, String(qid));
     removeFromSet(LS.correct, String(qid));
   }
-
-  renderQuestion();
+  renderQ();
 }
 
 function nextQ() {
-  if (currentIdx < currentQuiz.length - 1) {
-    currentIdx++;
-    renderQuestion();
-  } else if (mode === 'practice') {
-    showResult();
-  }
+  if (currentIdx < currentQuiz.length - 1) { currentIdx++; renderQ(); }
+  else if (mode === 'practice') showResult();
 }
-
 function prevQ() {
-  if (currentIdx > 0) {
-    currentIdx--;
-    renderQuestion();
-  }
+  if (currentIdx > 0) { currentIdx--; renderQ(); }
 }
 
-// ========== RESULT ==========
+// ===== RESULT =====
 function showResult() {
-  if (mode !== 'practice') {
-    goHome();
-    return;
-  }
+  if (mode !== 'practice') { goHome(); return; }
 
   const total = currentQuiz.length;
-  const answeredCount = Object.keys(answered).length;
-  let correctCount = 0;
-  currentQuiz.forEach(q => {
-    if (answered[q.id] === q.answer) correctCount++;
-  });
+  let correct = 0;
+  currentQuiz.forEach(q => { if (answered[q.id] === q.answer) correct++; });
+  const score = total > 0 ? Math.round(correct / total * 100) : 0;
+  const pass = score >= 60;
 
-  const score = total > 0 ? Math.round(correctCount / total * 100) : 0;
-  const passed = score >= 60;
-
-  document.getElementById('questionScreen').style.display = 'none';
+  document.getElementById('qScreen').style.display = 'none';
   document.getElementById('resultScreen').style.display = 'block';
   document.getElementById('bottomNav').style.display = 'none';
-  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('sectionBar').style.display = 'none';
+  document.getElementById('progressBar').style.display = 'none';
 
   document.getElementById('resultContent').innerHTML = `
-    <div style="margin-top:40px">
-      <div class="exam-score">${score}점</div>
-      <div class="${passed ? 'exam-pass' : 'exam-fail'}">
-        ${passed ? '🎉 합격!' : '😢 불합격'}
+    <div style="margin-top:20px">
+      <div class="result-score">${score}점</div>
+      <div class="${pass ? 'result-pass' : 'result-fail'}">
+        ${pass ? '합격' : '불합격'}
       </div>
-      <div class="exam-detail">${correctCount}/${total} 정답 (커트라인 60점)</div>
-      <div class="exam-detail" style="margin-top:8px">
-        오답: ${total - correctCount}문제
-      </div>
-      <div class="exam-actions">
-        <button class="exam-btn secondary" onclick="startQuiz('wrong')">오답 다시 풀기</button>
-        <button class="exam-btn primary" onclick="goHome()">홈으로</button>
+      <div class="result-detail">${correct}/${total} 정답 (합격 기준: 60점)</div>
+      <div class="result-detail">오답: ${total - correct}문제</div>
+      <div class="result-actions">
+        <button class="result-btn" onclick="startQuiz('wrong')">오답 다시 풀기</button>
+        <button class="result-btn primary" onclick="goHome()">홈으로</button>
       </div>
     </div>`;
 }
 
-// ========== NAVIGATION ==========
-function goBack() {
-  goHome();
-}
-
+// ===== NAV =====
+function goBack() { goHome(); }
 function goHome() {
   document.getElementById('homeScreen').style.display = 'block';
-  document.getElementById('questionScreen').style.display = 'none';
+  document.getElementById('qScreen').style.display = 'none';
   document.getElementById('resultScreen').style.display = 'none';
-  document.getElementById('progressWrap').style.display = 'none';
   document.getElementById('bottomNav').style.display = 'none';
-  document.querySelector('.back-btn').style.display = 'none';
+  document.getElementById('backBtn').style.display = 'none';
   document.getElementById('bookmarkBtn').style.display = 'none';
-  document.getElementById('headerTitle').textContent = '생명보험 문제은행';
+  document.getElementById('sectionBar').style.display = 'none';
+  document.getElementById('progressBar').style.display = 'none';
+  document.getElementById('headerTitle').textContent = '생명보험 모의고사';
   renderHome();
 }
 
-// ========== MODE & SETTINGS ==========
+// ===== SETTINGS =====
 function setMode(m) {
-  mode = m;
-  localStorage.setItem(LS.mode, m);
+  mode = m; localStorage.setItem(LS.mode, m);
   updateModeUI();
 }
-
 function updateModeUI() {
-  document.getElementById('modeStudy').className = 'mode-btn' + (mode === 'study' ? ' active' : '');
-  document.getElementById('modePractice').className = 'mode-btn' + (mode === 'practice' ? ' active' : '');
+  document.getElementById('modeStudy').className = 'mode-item' + (mode === 'study' ? ' active' : '');
+  document.getElementById('modePractice').className = 'mode-item' + (mode === 'practice' ? ' active' : '');
   document.getElementById('studyOptions').style.display = mode === 'study' ? 'block' : 'none';
 }
-
 function toggleHighlight() {
   showHighlight = !showHighlight;
   localStorage.setItem(LS.highlight, showHighlight);
   updateHighlightUI();
 }
-
 function updateHighlightUI() {
-  const el = document.getElementById('highlightToggle');
-  el.className = 'toggle' + (showHighlight ? ' on' : '');
+  document.getElementById('highlightToggle').className = 'toggle' + (showHighlight ? ' on' : '');
 }
-
 function toggleShuffle() {
   shuffleEnabled = !shuffleEnabled;
   localStorage.setItem(LS.shuffle, shuffleEnabled);
   updateShuffleUI();
 }
-
 function updateShuffleUI() {
-  document.getElementById('shuffleChip').className = 'opt-chip' + (shuffleEnabled ? ' active' : '');
+  document.getElementById('shuffleBtn').className = 'opt-btn' + (shuffleEnabled ? ' active' : '');
 }
-
 function toggleDark() {
   darkMode = !darkMode;
   document.body.classList.toggle('dark', darkMode);
   localStorage.setItem(LS.dark, darkMode);
 }
-
 function toggleBookmark() {
-  if (currentQuiz.length === 0) return;
+  if (!currentQuiz.length) return;
   const q = currentQuiz[currentIdx];
   const bm = getSet(LS.bookmarks);
   if (bm.has(String(q.id))) {
@@ -955,10 +1013,9 @@ function toggleBookmark() {
     addToSet(LS.bookmarks, String(q.id));
     showToast('북마크 추가');
   }
-  const bmNew = getSet(LS.bookmarks);
-  document.getElementById('bookmarkBtn').innerHTML = bmNew.has(String(q.id)) ? '&#9733;' : '&#9734;';
+  document.getElementById('bookmarkBtn').innerHTML =
+    getSet(LS.bookmarks).has(String(q.id)) ? '&#9733;' : '&#9734;';
 }
-
 function resetProgress() {
   if (!confirm('모든 진행 상황을 초기화하시겠습니까?')) return;
   localStorage.removeItem(LS.answered);
@@ -969,74 +1026,49 @@ function resetProgress() {
   renderHome();
 }
 
-// ========== UTILITIES ==========
-function getSet(key) {
-  try {
-    const arr = JSON.parse(localStorage.getItem(key) || '[]');
-    return new Set(arr);
-  } catch { return new Set(); }
+// ===== UTILS =====
+function getSet(k) {
+  try { return new Set(JSON.parse(localStorage.getItem(k) || '[]')); }
+  catch { return new Set(); }
 }
-
-function saveSet(key, set) {
-  localStorage.setItem(key, JSON.stringify([...set]));
-}
-
-function addToSet(key, val) {
-  const s = getSet(key);
-  s.add(val);
-  saveSet(key, s);
-}
-
-function removeFromSet(key, val) {
-  const s = getSet(key);
-  s.delete(val);
-  saveSet(key, s);
-}
-
-function shuffleArray(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
+function saveSet(k, s) { localStorage.setItem(k, JSON.stringify([...s])); }
+function addToSet(k, v) { const s = getSet(k); s.add(v); saveSet(k, s); }
+function removeFromSet(k, v) { const s = getSet(k); s.delete(v); saveSet(k, s); }
+function shuffle(a) {
+  const r = [...a];
+  for (let i = r.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
+    [r[i], r[j]] = [r[j], r[i]];
   }
-  return a;
+  return r;
 }
-
-function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 1500);
 }
 
-// Swipe support
-let touchStartX = 0;
-document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+// Swipe
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
 document.addEventListener('touchend', e => {
-  if (document.getElementById('questionScreen').style.display !== 'block') return;
-  const diff = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(diff) > 80) {
-    if (diff > 0) prevQ();
-    else nextQ();
-  }
+  if (document.getElementById('qScreen').style.display !== 'block') return;
+  const d = e.changedTouches[0].clientX - tx;
+  if (Math.abs(d) > 80) { d > 0 ? prevQ() : nextQ(); }
 });
 
-// Keyboard support
+// Keyboard
 document.addEventListener('keydown', e => {
-  if (document.getElementById('questionScreen').style.display !== 'block') return;
+  if (document.getElementById('qScreen').style.display !== 'block') return;
   if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextQ(); }
   if (e.key === 'ArrowLeft') { e.preventDefault(); prevQ(); }
-  if (e.key >= '1' && e.key <= '4') {
+  if (e.key >= '1' && e.key <= '5' && mode === 'practice') {
     const q = currentQuiz[currentIdx];
-    if (q && mode === 'practice') selectChoice(q.id, parseInt(e.key));
+    if (q) selectChoice(q.id, parseInt(e.key));
   }
 });
 
-// Init
 init();
 </script>
 </body>
