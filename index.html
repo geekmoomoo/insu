@@ -6,10 +6,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#1a3a6e">
-<meta name="apple-mobile-web-app-title" content="생보 모의고사">
+<meta name="apple-mobile-web-app-title" content="보험 모의고사">
 <link rel="apple-touch-icon" id="touchIcon" href="data:,">
 <link rel="manifest" href="manifest.json">
-<title>생명보험 모의고사</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6687538764913740" crossorigin="anonymous"></script>
+<title>보험 모의고사</title>
 <style>
 :root {
   --bg: #f5f5f0;
@@ -25,6 +26,10 @@
   --wrong-bg: #fde8e8;
   --font: 'Apple SD Gothic Neo', -apple-system, 'Malgun Gothic', sans-serif;
 }
+.damage {
+  --accent: #2e6b4f;
+  --accent-light: #e6f4ed;
+}
 .dark {
   --bg: #1a1a1e;
   --paper: #242428;
@@ -37,6 +42,10 @@
   --correct-bg: #1a2e22;
   --wrong: #ef5350;
   --wrong-bg: #2e1a1a;
+}
+.dark.damage {
+  --accent: #5ec4a0;
+  --accent-light: #1a2e28;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -51,17 +60,18 @@ body {
 
 /* ===== EXAM PAPER HEADER ===== */
 .exam-header {
-  background: var(--paper);
-  border-bottom: 3px double var(--border);
-  padding: 16px 24px 12px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 24px 8px;
   position: sticky; top: 0; z-index: 100;
+  opacity: 0.85;
 }
 .exam-header-top {
   display: flex; justify-content: space-between; align-items: center;
 }
 .exam-title {
-  font-size: 16px; font-weight: 800; letter-spacing: -0.5px;
-  color: var(--accent);
+  font-size: 13px; font-weight: 600; letter-spacing: -0.3px;
+  color: var(--text-sub);
 }
 .exam-controls {
   display: flex; gap: 8px; align-items: center;
@@ -76,18 +86,18 @@ body {
   background: var(--accent); color: #fff; border-color: var(--accent);
 }
 .back-arrow {
-  background: none; border: none; font-size: 20px;
-  cursor: pointer; color: var(--accent); padding: 4px 8px 4px 0;
+  background: none; border: none; font-size: 18px;
+  cursor: pointer; color: var(--text-sub); padding: 4px 8px 4px 0;
   display: none;
 }
 .exam-section-bar {
-  margin-top: 8px; font-size: 12px; color: var(--text-sub);
+  margin-top: 6px; font-size: 11px; color: var(--text-sub);
   display: flex; justify-content: space-between; align-items: center;
 }
 .section-label {
-  font-weight: 700; color: var(--accent);
-  padding: 2px 8px; background: var(--accent-light);
-  border-radius: 4px; font-size: 11px;
+  font-weight: 600; color: var(--text-sub);
+  padding: 2px 8px; background: var(--border);
+  border-radius: 4px; font-size: 10px;
 }
 .progress-mini {
   height: 3px; background: var(--border); border-radius: 2px;
@@ -107,7 +117,7 @@ body {
   background: var(--paper);
   border: 2px solid var(--accent);
   border-radius: 8px;
-  padding: 20px; text-align: center;
+  padding: 12px; text-align: center;
   margin-bottom: 20px;
 }
 .home-banner h1 {
@@ -201,7 +211,7 @@ body {
 }
 .special-btn {
   background: var(--paper); border: 1px solid var(--border);
-  border-radius: 8px; padding: 12px 8px; text-align: center;
+  border-radius: 8px; padding: 6px 8px; text-align: center;
   cursor: pointer; transition: all 0.15s;
 }
 .special-btn:active { transform: scale(0.97); }
@@ -329,41 +339,43 @@ body {
 
 /* Explanation */
 .explanation {
-  margin-top: 16px; padding: 14px;
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--accent);
-  background: var(--accent-light);
-  font-size: 14px; line-height: 1.6;
-  display: none; border-radius: 0 4px 4px 0;
+  margin-top: 16px; padding: 12px 14px;
+  border: none;
+  border-left: 3px solid var(--border);
+  background: transparent;
+  font-size: 13px; line-height: 1.6;
+  color: var(--text-sub);
+  display: none; border-radius: 0;
 }
 .explanation-label {
-  font-weight: 700; color: var(--accent); margin-bottom: 4px;
-  font-size: 13px;
+  font-weight: 600; color: var(--text-sub); margin-bottom: 4px;
+  font-size: 12px;
 }
 
 /* Bottom Nav */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--paper);
-  border-top: 2px solid var(--border);
-  padding: 10px 24px; padding-bottom: max(10px, env(safe-area-inset-bottom));
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 8px 24px; padding-bottom: max(8px, env(safe-area-inset-bottom));
   display: none; z-index: 100;
+  opacity: 0.9;
 }
 .bottom-nav-inner {
   max-width: 600px; margin: 0 auto;
   display: flex; justify-content: space-between; align-items: center;
 }
 .nav-btn {
-  padding: 10px 24px; border-radius: 6px;
-  border: 1px solid var(--border); font-size: 14px; font-weight: 600;
+  padding: 8px 20px; border-radius: 6px;
+  border: 1px solid var(--border); font-size: 13px; font-weight: 600;
   cursor: pointer; font-family: var(--font); background: var(--paper);
-  color: var(--text); transition: all 0.2s;
+  color: var(--text-sub); transition: all 0.2s;
 }
 .nav-btn:active { transform: scale(0.96); }
-.nav-btn.next { background: var(--accent); color: #fff; border-color: var(--accent); }
-.nav-btn:disabled { opacity: 0.3; pointer-events: none; }
+.nav-btn.next { background: var(--accent); color: #fff; border-color: var(--accent); opacity: 0.85; }
+.nav-btn:disabled { opacity: 0.2; pointer-events: none; }
 .nav-counter {
-  font-size: 13px; font-weight: 600; color: var(--text-sub);
+  font-size: 12px; font-weight: 600; color: var(--text-sub);
 }
 
 /* Exam Result */
@@ -434,6 +446,31 @@ body {
   border-color: var(--correct) !important;
 }
 
+/* Ad Interstitial */
+.ad-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  z-index: 400; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.ad-container {
+  background: #fff; border-radius: 12px;
+  width: 100%; max-width: 400px; min-height: 300px;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; overflow: hidden;
+}
+.ad-placeholder {
+  color: #999; font-size: 14px; padding: 20px; text-align: center;
+}
+.ad-skip {
+  margin-top: 16px; padding: 10px 32px; border-radius: 8px;
+  border: none; background: rgba(255,255,255,0.2); color: #fff;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: var(--font); transition: all 0.2s;
+}
+.ad-skip:disabled { opacity: 0.4; cursor: default; }
+.ad-skip:not(:disabled):hover { background: rgba(255,255,255,0.3); }
+
 /* Resume popup */
 .popup-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.4);
@@ -475,6 +512,37 @@ body {
   text-align: center; font-size: 11px; color: var(--text-sub);
   padding: 20px 0;
 }
+/* Type Tab Bar */
+.type-bar {
+  display: flex; gap: 0; margin-bottom: 20px;
+  background: var(--paper);
+  border: 2px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+}
+.type-item {
+  flex: 1; padding: 10px; border: none; background: var(--paper);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: var(--font); color: var(--text-sub);
+  border-right: 2px solid var(--border);
+  transition: all 0.2s;
+}
+.type-item:last-child { border-right: none; }
+#typeLife { color: #1a3a6e; }
+#typeDamage { color: #2e6b4f; }
+#typeLife.active {
+  background: #1a3a6e; color: #fff; border-color: #1a3a6e;
+}
+#typeDamage.active {
+  background: #2e6b4f; color: #fff; border-color: #2e6b4f;
+}
+.dark #typeLife { color: #6b9eff; }
+.dark #typeDamage { color: #5ec4a0; }
+.dark #typeLife.active {
+  background: #2a4a7e; color: #fff; border-color: #2a4a7e;
+}
+.dark #typeDamage.active {
+  background: #2a5e4a; color: #fff; border-color: #2a5e4a;
+}
 </style>
 </head>
 <body>
@@ -484,7 +552,7 @@ body {
   <div class="exam-header-top">
     <div style="display:flex;align-items:center">
       <button class="back-arrow" id="backBtn" onclick="goBack()">&#8592;</button>
-      <span class="exam-title" id="headerTitle">생명보험 모의고사</span>
+      <span class="exam-title" id="headerTitle">생명·손해·제3보험 모의고사</span>
     </div>
     <div class="exam-controls">
       <button class="ctrl-btn" id="completeBtn" style="display:none" onclick="markComplete()">&#10003; 완료</button>
@@ -504,9 +572,10 @@ body {
 <!-- Home -->
 <div id="homeScreen">
   <div class="container home">
-    <div class="home-banner">
-      <h1>생명보험·제3보험 모의고사 <span id="totalCount" style="font-size:14px;font-weight:400;color:var(--text-sub)"></span></h1>
-      <p>모집인 등록자격시험 문제은행 (2024~2025)</p>
+    <!-- Insurance Type Tab -->
+    <div class="type-bar">
+      <button class="type-item active" id="typeLife" onclick="setInsType('life')">생명·제3보험</button>
+      <button class="type-item" id="typeDamage" onclick="setInsType('damage')">손해·제3보험</button>
     </div>
 
     <!-- Mode -->
@@ -572,7 +641,7 @@ body {
       </div>
       <div class="options-row">
         <button class="opt-btn" onclick="startRandomQuiz(20)">&#127922; 랜덤 20문제</button>
-        <button class="opt-btn" onclick="startRandomQuiz(40)">&#127922; 랜덤 40문제</button>
+        <button class="opt-btn" id="randomMaxBtn" onclick="startRandomQuiz(40)">&#127922; 랜덤 40문제</button>
         <button class="opt-btn" id="shuffleBtn" onclick="toggleShuffle()">&#128256; 셔플</button>
       </div>
       <!-- Section accuracy -->
@@ -588,10 +657,8 @@ body {
     <!-- 2025 Mock Exams (Primary) -->
     <div class="cat-section" id="mockSection"></div>
 
-    <!-- Archive (collapsible) -->
-    <div class="cat-section" id="archiveSection"></div>
 
-    <div class="credit">2025 생명보험 모의고사 기출문제 기반</div>
+    <div class="credit" id="creditText">2025 생명보험 모의고사 기출문제 기반</div>
   </div>
 </div>
 
@@ -638,6 +705,20 @@ body {
   </div>
 </div>
 
+<!-- Ad Interstitial -->
+<div class="ad-overlay" id="adOverlay" style="display:none">
+  <div class="ad-container" id="adContainer">
+    <!-- AdSense 광고 단위: 슬롯 ID를 발급받은 후 data-ad-slot 값을 교체하세요 -->
+    <ins class="adsbygoogle"
+      style="display:block; width:100%; min-height:250px;"
+      data-ad-client="ca-pub-6687538764913740"
+      data-ad-slot="1190202125"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  </div>
+  <button class="ad-skip" id="adSkipBtn" disabled onclick="closeAd()">3초 후 시작</button>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -648,9 +729,12 @@ body {
 </div>
 
 <script src="data.js"></script>
+<script src="data_sonbo.js"></script>
 <script>
 // ===== STATE =====
 let allQuestions = [];
+let lifeQuestions = [];
+let damageQuestions = [];
 let currentQuiz = [];
 let currentIdx = 0;
 let mode = 'study';
@@ -658,19 +742,24 @@ let showHighlight = true;
 let shuffleEnabled = false;
 let darkMode = false;
 let answered = {};
+let insType = 'life';
 
-const LS = {
-  bookmarks: 'insu_bm2',
-  wrong: 'insu_wr2',
-  answered: 'insu_ans2',
-  correct: 'insu_cor2',
-  completed: 'insu_comp',
-  lastPos: 'insu_pos',
-  mode: 'insu_mode',
-  highlight: 'insu_hl',
-  shuffle: 'insu_shf',
-  dark: 'insu_dk',
-};
+function getLS() {
+  const prefix = insType === 'damage' ? 'sonbo_' : 'insu_';
+  return {
+    bookmarks: prefix + 'bm2',
+    wrong: prefix + 'wr2',
+    answered: prefix + 'ans2',
+    correct: prefix + 'cor2',
+    completed: prefix + 'comp',
+    lastPos: prefix + 'pos',
+    mode: 'insu_mode',
+    highlight: 'insu_hl',
+    shuffle: 'insu_shf',
+    dark: 'insu_dk',
+  };
+}
+let LS = getLS();
 
 const CIRCLES = ['\u2460','\u2461','\u2462','\u2463','\u2464'];
 
@@ -695,14 +784,25 @@ function init() {
     document.getElementById('touchIcon').href = c.toDataURL('image/png');
   } catch {}
 
+  // Init both datasets
+  if (typeof EMBEDDED_DATA !== 'undefined') {
+    lifeQuestions = EMBEDDED_DATA;
+    lifeQuestions.forEach((q, i) => q.id = i + 1);
+  }
+  if (typeof EMBEDDED_DATA_SONBO !== 'undefined') {
+    damageQuestions = EMBEDDED_DATA_SONBO;
+    damageQuestions.forEach((q, i) => q.id = i + 1);
+  }
+
+  // Restore insurance type
+  insType = localStorage.getItem('insu_type') || 'life';
+  LS = getLS();
+  allQuestions = insType === 'damage' ? damageQuestions : lifeQuestions;
+
+  updateInsTypeUI();
   updateModeUI();
   updateHighlightUI();
   updateShuffleUI();
-
-  if (typeof EMBEDDED_DATA !== 'undefined') {
-    allQuestions = EMBEDDED_DATA;
-  }
-  allQuestions.forEach((q, i) => q.id = i + 1);
 
   document.getElementById('loading').style.display = 'none';
   renderHome();
@@ -711,9 +811,6 @@ function init() {
 // ===== HOME =====
 function getMockQs() {
   return allQuestions.filter(q => !q.archive);
-}
-function getArchiveQs() {
-  return allQuestions.filter(q => q.archive);
 }
 
 function renderHome() {
@@ -724,11 +821,10 @@ function renderHome() {
   const comp = getSet(LS.completed);
 
   const mockQs = getMockQs();
-  const archiveQs = getArchiveQs();
+
   const mockSaved = mockQs.filter(q => saved.has(String(q.id)));
   const mockCorrect = mockQs.filter(q => correct.has(String(q.id)));
 
-  document.getElementById('totalCount').textContent = '(' + mockQs.length.toLocaleString() + '문제)';
 
   // Study panel
   document.getElementById('allCount').textContent = mockQs.length + '문제';
@@ -743,7 +839,19 @@ function renderHome() {
   document.getElementById('bmCountP').textContent = bm.size + '문제';
   document.getElementById('wrongCount').textContent = wrong.size + '문제';
 
-  const sectionOrder = ['보험이론 및 윤리', '보험법규', '생명보험', '제3보험'];
+  const sectionOrder = insType === 'damage'
+    ? ['보험이론 및 윤리', '보험법규', '손해보험', '제3보험']
+    : ['보험이론 및 윤리', '보험법규', '생명보험', '제3보험'];
+
+  // Update random button for damage insurance (50 questions)
+  const maxRandom = insType === 'damage' ? 50 : 40;
+  const rmb = document.getElementById('randomMaxBtn');
+  rmb.innerHTML = '&#127922; 랜덤 ' + maxRandom + '문제';
+  rmb.setAttribute('onclick', 'startRandomQuiz(' + maxRandom + ')');
+
+  // Update credit text
+  document.getElementById('creditText').textContent =
+    insType === 'damage' ? '2025 손해보험 모의고사 기출문제 기반' : '2025 생명보험 모의고사 기출문제 기반';
 
   // Section accuracy stats (practice mode)
   let statsHtml = '<div class="cat-section-title">영역별 정답률</div><div class="section-stats">';
@@ -795,7 +903,12 @@ function renderHome() {
 
   // Separate by year
   const years = {};
-  Object.keys(cats).sort().forEach(c => {
+  Object.keys(cats).sort((a, b) => {
+    const am = a.match(/(\d+)월\s*(\d+)회/);
+    const bm = b.match(/(\d+)월\s*(\d+)회/);
+    if (am && bm) return (parseInt(am[1]) * 10 + parseInt(am[2])) - (parseInt(bm[1]) * 10 + parseInt(bm[2]));
+    return a.localeCompare(b);
+  }).forEach(c => {
     const ym = c.match(/^(\d{4})년/);
     const year = ym ? ym[1] : '기타';
     if (!years[year]) years[year] = [];
@@ -842,57 +955,8 @@ function renderHome() {
   });
   document.getElementById('mockSection').innerHTML = mockHtml;
 
-  // Render archive (collapsible)
-  if (archiveQs.length > 0) {
-    const archiveCats = {};
-    archiveQs.forEach(q => {
-      const c = q.category;
-      if (!archiveCats[c]) archiveCats[c] = [];
-      archiveCats[c].push(q);
-    });
-
-    let arcHtml = `<div class="cat-section-title" style="cursor:pointer;display:flex;align-items:center;gap:6px" onclick="toggleArchive()">
-      <span id="archiveArrow" style="transition:transform 0.2s;display:inline-block">&#9654;</span>
-      아카이브 (유튜브 강의 자료 · ${archiveQs.length}문제)
-    </div>`;
-    arcHtml += '<div class="mock-list" id="archiveList" style="display:none">';
-    arcHtml += `<div style="font-size:12px;color:var(--text-sub);padding:8px 0;line-height:1.5">
-      유튜브 강의에서 추출한 보충 자료입니다.<br>실제 시험과 형식이 다를 수 있습니다.
-    </div>`;
-
-    Object.keys(archiveCats).sort().forEach(c => {
-      const qs = archiveCats[c];
-      const done = qs.filter(q => saved.has(String(q.id))).length;
-      const pct = qs.length > 0 ? Math.round(done / qs.length * 100) : 0;
-      let badge = '';
-      if (pct === 100) badge = '<span class="mock-badge done">완료</span>';
-      else if (done > 0) badge = `<span class="mock-badge partial">${pct}%</span>`;
-
-      arcHtml += `<div class="mock-item" onclick="startQuiz('cat:${c}')">
-        <div class="mock-item-title">${c}</div>
-        <div class="mock-item-info">
-          <span>${qs.length}문제</span>
-          ${badge}
-        </div>
-      </div>`;
-    });
-    arcHtml += '</div>';
-    document.getElementById('archiveSection').innerHTML = arcHtml;
-  }
 }
 
-// ===== ARCHIVE TOGGLE =====
-function toggleArchive() {
-  const list = document.getElementById('archiveList');
-  const arrow = document.getElementById('archiveArrow');
-  if (list.style.display === 'none') {
-    list.style.display = 'flex';
-    arrow.style.transform = 'rotate(90deg)';
-  } else {
-    list.style.display = 'none';
-    arrow.style.transform = 'rotate(0deg)';
-  }
-}
 
 // ===== QUIZ =====
 let currentFilter = '';
@@ -956,17 +1020,44 @@ function resumeFrom(idx) {
   enterQuiz();
 }
 
+let adTimer = null;
 function enterQuiz() {
-  document.getElementById('homeScreen').style.display = 'none';
-  document.getElementById('qScreen').style.display = 'block';
-  document.getElementById('resultScreen').style.display = 'none';
-  document.getElementById('bottomNav').style.display = 'block';
-  document.getElementById('backBtn').style.display = 'inline';
-  document.getElementById('bookmarkBtn').style.display = 'inline';
-  document.getElementById('sectionBar').style.display = 'flex';
-  document.getElementById('progressBar').style.display = 'block';
-  updateCompleteBtn();
-  renderQ();
+  showAd(() => {
+    document.getElementById('homeScreen').style.display = 'none';
+    document.getElementById('qScreen').style.display = 'block';
+    document.getElementById('resultScreen').style.display = 'none';
+    document.getElementById('bottomNav').style.display = 'block';
+    document.getElementById('backBtn').style.display = 'inline';
+    document.getElementById('bookmarkBtn').style.display = 'inline';
+    document.getElementById('sectionBar').style.display = 'flex';
+    document.getElementById('progressBar').style.display = 'block';
+    updateCompleteBtn();
+    renderQ();
+  });
+}
+function showAd(callback) {
+  window._adCallback = callback;
+  const btn = document.getElementById('adSkipBtn');
+  btn.disabled = true;
+  let sec = 3;
+  btn.textContent = sec + '초 후 시작';
+  document.getElementById('adOverlay').style.display = 'flex';
+  try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+  adTimer = setInterval(() => {
+    sec--;
+    if (sec > 0) {
+      btn.textContent = sec + '초 후 시작';
+    } else {
+      clearInterval(adTimer);
+      btn.textContent = '시작하기';
+      btn.disabled = false;
+    }
+  }, 1000);
+}
+function closeAd() {
+  clearInterval(adTimer);
+  document.getElementById('adOverlay').style.display = 'none';
+  if (window._adCallback) { window._adCallback(); window._adCallback = null; }
 }
 
 function getLastPos(filter) {
@@ -1168,7 +1259,7 @@ function goHome() {
   document.getElementById('completeBtn').style.display = 'none';
   document.getElementById('sectionBar').style.display = 'none';
   document.getElementById('progressBar').style.display = 'none';
-  document.getElementById('headerTitle').textContent = '생명보험 모의고사';
+  document.getElementById('headerTitle').textContent = '생명·손해·제3보험 모의고사';
   renderHome();
 }
 
@@ -1199,6 +1290,20 @@ function toggleShuffle() {
 }
 function updateShuffleUI() {
   document.getElementById('shuffleBtn').className = 'opt-btn' + (shuffleEnabled ? ' active' : '');
+}
+function setInsType(type) {
+  insType = type;
+  localStorage.setItem('insu_type', type);
+  LS = getLS();
+  allQuestions = insType === 'damage' ? damageQuestions : lifeQuestions;
+  updateInsTypeUI();
+  renderHome();
+}
+function updateInsTypeUI() {
+  document.getElementById('typeLife').className = 'type-item' + (insType === 'life' ? ' active' : '');
+  document.getElementById('typeDamage').className = 'type-item' + (insType === 'damage' ? ' active' : '');
+  document.body.classList.toggle('damage', insType === 'damage');
+  document.getElementById('headerTitle').textContent = '생명·손해·제3보험 모의고사';
 }
 function toggleDark() {
   darkMode = !darkMode;
