@@ -1,0 +1,9 @@
+{
+  "appId": "com.geekmoomoo.insu",
+  "appName": "보험 모의고사",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#f5f5f0",
+    "allowMixedContent": true
+  }
+}

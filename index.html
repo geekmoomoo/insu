@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#1a3a6e">
@@ -56,6 +56,8 @@ body {
   -webkit-tap-highlight-color: transparent;
   transition: background 0.3s, color 0.3s;
   margin: 0 8px;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* ===== EXAM PAPER HEADER ===== */
@@ -1021,6 +1023,20 @@ function resumeFrom(idx) {
 }
 
 let adTimer = null;
+const isNative = window.Capacitor && window.Capacitor.isNativePlatform();
+let admobReady = false;
+
+// AdMob 초기화 (네이티브 앱 전용)
+if (isNative) {
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const AdMob = Capacitor.Plugins.AdMob;
+      await AdMob.initialize({ initializeForTesting: false });
+      admobReady = true;
+    } catch(e) { console.warn('AdMob init failed:', e); }
+  });
+}
+
 function enterQuiz() {
   showAd(() => {
     document.getElementById('homeScreen').style.display = 'none';
@@ -1035,7 +1051,32 @@ function enterQuiz() {
     renderQ();
   });
 }
+
 function showAd(callback) {
+  if (isNative && admobReady) {
+    showAdMobInterstitial(callback);
+  } else if (isNative) {
+    callback();
+  } else {
+    showAdSense(callback);
+  }
+}
+
+// 네이티브: AdMob 전면 광고
+async function showAdMobInterstitial(callback) {
+  try {
+    const AdMob = Capacitor.Plugins.AdMob;
+    await AdMob.prepareInterstitial({ adId: 'ca-app-pub-6687538764913740/1876597835' });
+    await AdMob.showInterstitial();
+    callback();
+  } catch(e) {
+    console.warn('AdMob interstitial failed:', e);
+    callback();
+  }
+}
+
+// 웹: AdSense 전면 광고
+function showAdSense(callback) {
   window._adCallback = callback;
   const btn = document.getElementById('adSkipBtn');
   btn.disabled = true;

@@ -1,6 +1,11 @@
 *.txt
 *.py
+*.rtf
 questions.json
 questions_*.json
 .DS_Store
 .vercel
+node_modules/
+android/
+www/
+package-lock.json
