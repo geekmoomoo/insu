@@ -6,11 +6,43 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#1a3a6e">
+<meta name="description" content="2025년 생명보험, 손해보험, 제3보험 자격시험 대비 무료 모의고사. 2000개 이상 기출문제와 해설, 학습모드·시험모드, 오답노트, 북마크 기능 제공.">
+<meta name="keywords" content="보험 모의고사, 생명보험 기출문제, 손해보험 기출문제, 제3보험, 보험 자격시험, 보험설계사 시험, 보험이론, 보험법규">
+<meta property="og:type" content="website">
+<meta property="og:title" content="보험 모의고사 - 생명·손해·제3보험 기출문제 학습">
+<meta property="og:description" content="2025년 생명보험·손해보험 자격시험 대비 무료 모의고사. 2000개 이상 기출문제, 해설, 오답노트 제공.">
+<meta property="og:url" content="https://insu-two.vercel.app">
+<meta property="og:locale" content="ko_KR">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://insu-two.vercel.app">
 <meta name="apple-mobile-web-app-title" content="보험 모의고사">
 <link rel="apple-touch-icon" id="touchIcon" href="data:,">
 <link rel="manifest" href="manifest.json">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "보험 모의고사",
+  "description": "2025년 생명보험, 손해보험, 제3보험 자격시험 대비 무료 모의고사 앱. 2000개 이상 기출문제와 상세 해설 제공.",
+  "url": "https://insu-two.vercel.app",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "KRW"
+  },
+  "inLanguage": "ko",
+  "about": {
+    "@type": "EducationalOccupationalProgram",
+    "name": "보험 자격시험 준비",
+    "educationalProgramMode": "online",
+    "occupationalCategory": "보험설계사"
+  }
+}
+</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6687538764913740" crossorigin="anonymous"></script>
-<title>보험 모의고사</title>
+<title>보험 모의고사 - 생명·손해·제3보험 기출문제 학습</title>
 <style>
 :root {
   --bg: #f5f5f0;
@@ -545,9 +577,31 @@ body {
 .dark #typeDamage.active {
   background: #2a5e4a; color: #fff; border-color: #2a5e4a;
 }
+/* Global Nav */
+.global-nav { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 8px 24px; background: var(--bg); border-bottom: 1px solid var(--border); }
+.global-nav a { color: var(--accent); text-decoration: none; font-size: 13px; font-weight: 600; }
+.global-nav a:hover { text-decoration: underline; }
+/* Guide Cards on Home */
+.guide-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.guide-card { background: var(--paper); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-decoration: none; color: inherit; transition: all 0.15s; display: block; }
+.guide-card:active { transform: scale(0.97); }
+.guide-card-tag { font-size: 10px; font-weight: 600; color: var(--accent); background: var(--accent-light); padding: 2px 6px; border-radius: 8px; display: inline-block; margin-bottom: 4px; }
+.guide-card-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.guide-card-desc { font-size: 11px; color: var(--text-sub); }
+.global-footer { text-align: center; padding: 8px 0 16px; font-size: 12px; }
+.global-footer a { color: var(--text-sub); text-decoration: none; margin: 0 4px; }
 </style>
 </head>
 <body>
+
+<!-- Global Navigation -->
+<div class="global-nav" id="globalNav">
+  <a href="index.html">홈</a>
+  <a href="guide.html">학습 가이드</a>
+  <a href="exam-guide.html">시험 정보</a>
+  <a href="about.html">소개</a>
+  <a href="contact.html">연락처</a>
+</div>
 
 <!-- Header -->
 <div class="exam-header">
@@ -659,8 +713,46 @@ body {
     <!-- 2025 Mock Exams (Primary) -->
     <div class="cat-section" id="mockSection"></div>
 
+    <!-- 학습 가이드 섹션 -->
+    <div class="cat-section">
+      <div class="cat-section-title">학습 가이드</div>
+      <div class="guide-cards">
+        <a href="exam-guide.html" class="guide-card">
+          <span class="guide-card-tag">시험안내</span>
+          <div class="guide-card-title">보험 자격시험 안내</div>
+          <div class="guide-card-desc">시험과목, 합격 기준, 일정</div>
+        </a>
+        <a href="study-guide.html" class="guide-card">
+          <span class="guide-card-tag">학습전략</span>
+          <div class="guide-card-title">학습 방법 가이드</div>
+          <div class="guide-card-desc">4단계 학습법</div>
+        </a>
+        <a href="guide-life-insurance.html" class="guide-card">
+          <span class="guide-card-tag">생명보험</span>
+          <div class="guide-card-title">생명보험 시험 가이드</div>
+          <div class="guide-card-desc">접수부터 합격까지</div>
+        </a>
+        <a href="guide-damage-insurance.html" class="guide-card">
+          <span class="guide-card-tag">손해보험</span>
+          <div class="guide-card-title">손해보험 합격 전략</div>
+          <div class="guide-card-desc">과목별 대비 전략</div>
+        </a>
+      </div>
+      <div style="text-align:center;margin-bottom:16px">
+        <a href="guide.html" style="color:var(--accent);font-size:13px;font-weight:600;text-decoration:none">전체 가이드 보기 &rarr;</a>
+      </div>
+    </div>
 
     <div class="credit" id="creditText">2025 생명보험 모의고사 기출문제 기반</div>
+    <div class="global-footer">
+      <a href="guide.html">학습 가이드</a> &middot;
+      <a href="exam-guide.html">시험 정보</a> &middot;
+      <a href="about.html">소개</a> &middot;
+      <a href="contact.html">연락처</a><br>
+      <a href="privacy.html">개인정보처리방침</a> &middot;
+      <a href="terms.html">이용약관</a>
+      <p style="margin-top:4px;color:var(--text-sub)">&copy; 2025 보험 모의고사</p>
+    </div>
   </div>
 </div>
 
@@ -729,6 +821,50 @@ body {
   <div class="spinner"></div>
   <div>문제 불러오는 중...</div>
 </div>
+
+<!-- SEO: 크롤러용 정적 콘텐츠 -->
+<noscript>
+<div style="max-width:560px;margin:0 auto;padding:24px;font-family:-apple-system,'Malgun Gothic',sans-serif;color:#1a1a1a;line-height:1.8">
+  <h1 style="font-size:22px;color:#1a3a6e;border-bottom:2px solid #1a3a6e;padding-bottom:8px">보험 모의고사 - 생명·손해·제3보험 기출문제 학습</h1>
+  <p>2025년 생명보험, 손해보험, 제3보험 자격시험을 준비하는 수험생을 위한 무료 온라인 모의고사 서비스입니다. 2000개 이상의 실제 기출문제와 상세 해설을 제공합니다.</p>
+
+  <h2 style="font-size:18px;color:#1a3a6e;margin-top:24px">학습 과목</h2>
+  <ul>
+    <li><strong>생명보험</strong> - 보험이론 및 윤리, 보험법규, 생명보험, 제3보험</li>
+    <li><strong>손해보험</strong> - 보험이론 및 윤리, 보험법규, 손해보험, 제3보험</li>
+  </ul>
+
+  <h2 style="font-size:18px;color:#1a3a6e;margin-top:24px">주요 기능</h2>
+  <ul>
+    <li><strong>학습모드</strong> - 정답과 해설을 보며 학습. 정답 표시 on/off 선택 가능</li>
+    <li><strong>시험모드</strong> - 실전처럼 문제 풀고 점수 확인 (합격 기준 60점)</li>
+    <li><strong>영역별 학습</strong> - 보험이론, 보험법규, 생명/손해보험, 제3보험 영역별 집중 학습</li>
+    <li><strong>연도별 모의고사</strong> - 2024~2025년 실제 기출문제를 회차별로 풀기</li>
+    <li><strong>오답노트</strong> - 틀린 문제만 모아서 반복 학습</li>
+    <li><strong>북마크</strong> - 중요한 문제 저장 후 나중에 복습</li>
+    <li><strong>랜덤 퀴즈</strong> - 무작위 20문제 또는 40~50문제 연습</li>
+    <li><strong>진행률 추적</strong> - 영역별 정답률과 학습 완료 현황 확인</li>
+  </ul>
+
+  <h2 style="font-size:18px;color:#1a3a6e;margin-top:24px">보험 자격시험 안내</h2>
+  <p>보험설계사 자격시험은 생명보험협회와 손해보험협회에서 주관하며, 매월 시행됩니다. 시험은 객관식 5지선다 형식으로 출제되며, 합격 기준은 전 과목 평균 60점 이상입니다.</p>
+  <ul>
+    <li>생명보험: 보험이론 및 윤리 + 보험법규 + 생명보험 + 제3보험 (40문제)</li>
+    <li>손해보험: 보험이론 및 윤리 + 보험법규 + 손해보험 + 제3보험 (50문제)</li>
+  </ul>
+
+  <h2 style="font-size:18px;color:#1a3a6e;margin-top:24px">효과적인 학습 방법</h2>
+  <ol>
+    <li>먼저 학습모드에서 영역별로 전체 문제를 한 번 훑어보세요.</li>
+    <li>시험모드로 전환하여 회차별 모의고사를 실전처럼 풀어보세요.</li>
+    <li>오답노트에서 틀린 문제를 반복 학습하세요.</li>
+    <li>랜덤 퀴즈로 실전 감각을 유지하세요.</li>
+  </ol>
+
+  <p style="margin-top:24px"><a href="exam-guide.html">보험 자격시험 상세 안내</a> | <a href="study-guide.html">학습 방법 가이드</a> | <a href="privacy.html">개인정보 처리방침</a></p>
+  <p style="color:#888;font-size:12px;margin-top:16px">이 서비스를 이용하려면 JavaScript를 활성화해 주세요.</p>
+</div>
+</noscript>
 
 <script src="data.js"></script>
 <script src="data_sonbo.js"></script>
