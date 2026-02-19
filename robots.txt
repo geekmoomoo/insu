@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /data.js
+Disallow: /data_sonbo.js
+
+Sitemap: https://insu-two.vercel.app/sitemap.xml

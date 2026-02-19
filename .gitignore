@@ -1,4 +1,5 @@
 *.txt
+!robots.txt
 *.py
 *.rtf
 questions.json

@@ -480,30 +480,6 @@ body {
   border-color: var(--correct) !important;
 }
 
-/* Ad Interstitial */
-.ad-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-  z-index: 400; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 20px;
-}
-.ad-container {
-  background: #fff; border-radius: 12px;
-  width: 100%; max-width: 400px; min-height: 300px;
-  display: flex; align-items: center; justify-content: center;
-  flex-direction: column; overflow: hidden;
-}
-.ad-placeholder {
-  color: #999; font-size: 14px; padding: 20px; text-align: center;
-}
-.ad-skip {
-  margin-top: 16px; padding: 10px 32px; border-radius: 8px;
-  border: none; background: rgba(255,255,255,0.2); color: #fff;
-  font-size: 14px; font-weight: 600; cursor: pointer;
-  font-family: var(--font); transition: all 0.2s;
-}
-.ad-skip:disabled { opacity: 0.4; cursor: default; }
-.ad-skip:not(:disabled):hover { background: rgba(255,255,255,0.3); }
 
 /* Resume popup */
 .popup-overlay {
@@ -799,19 +775,6 @@ body {
   </div>
 </div>
 
-<!-- Ad Interstitial -->
-<div class="ad-overlay" id="adOverlay" style="display:none">
-  <div class="ad-container" id="adContainer">
-    <!-- AdSense 광고 단위: 슬롯 ID를 발급받은 후 data-ad-slot 값을 교체하세요 -->
-    <ins class="adsbygoogle"
-      style="display:block; width:100%; min-height:250px;"
-      data-ad-client="ca-pub-6687538764913740"
-      data-ad-slot="1190202125"
-      data-ad-format="auto"
-      data-full-width-responsive="true"></ins>
-  </div>
-  <button class="ad-skip" id="adSkipBtn" disabled onclick="closeAd()">3초 후 시작</button>
-</div>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -1158,7 +1121,6 @@ function resumeFrom(idx) {
   enterQuiz();
 }
 
-let adTimer = null;
 const isNative = window.Capacitor && window.Capacitor.isNativePlatform();
 let admobReady = false;
 
@@ -1191,10 +1153,8 @@ function enterQuiz() {
 function showAd(callback) {
   if (isNative && admobReady) {
     showAdMobInterstitial(callback);
-  } else if (isNative) {
-    callback();
   } else {
-    showAdSense(callback);
+    callback();
   }
 }
 
@@ -1211,31 +1171,6 @@ async function showAdMobInterstitial(callback) {
   }
 }
 
-// 웹: AdSense 전면 광고
-function showAdSense(callback) {
-  window._adCallback = callback;
-  const btn = document.getElementById('adSkipBtn');
-  btn.disabled = true;
-  let sec = 3;
-  btn.textContent = sec + '초 후 시작';
-  document.getElementById('adOverlay').style.display = 'flex';
-  try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-  adTimer = setInterval(() => {
-    sec--;
-    if (sec > 0) {
-      btn.textContent = sec + '초 후 시작';
-    } else {
-      clearInterval(adTimer);
-      btn.textContent = '시작하기';
-      btn.disabled = false;
-    }
-  }, 1000);
-}
-function closeAd() {
-  clearInterval(adTimer);
-  document.getElementById('adOverlay').style.display = 'none';
-  if (window._adCallback) { window._adCallback(); window._adCallback = null; }
-}
 
 function getLastPos(filter) {
   try {
